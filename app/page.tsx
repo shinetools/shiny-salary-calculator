@@ -1,13 +1,27 @@
-import Link from "next/link"
+import { getJobData } from "@/api/airtable"
+import { jobIdSchema } from "@/schemas/job-id.schema"
+import { levelIdSchema } from "@/schemas/level-id.schema"
+import { z } from "zod"
 
-import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
+import IndexPageClient from "./page.client"
 
-export default function IndexPage() {
+const paramsSchema = z.object({
+  jobId: jobIdSchema.optional(),
+  levelId: levelIdSchema.optional(),
+})
+
+export type ParamsSchema = z.infer<typeof paramsSchema>
+
+interface IndexPageProps {
+  searchParams: ParamsSchema
+}
+
+export default async function IndexPage(props: IndexPageProps) {
+  const data = await getJobData()
+
   return (
-    <section className="bg-slate-200 p-4">
-      <h1 className="font-serif text-4xl">Hello there</h1>
-      <h1 className="font-sans text-xl">Hello there</h1>
+    <section className="mx-auto max-w-6xl p-4">
+      <IndexPageClient params={props.searchParams} jobData={data} />
     </section>
   )
 }

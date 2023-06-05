@@ -1,10 +1,19 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { shinePalette } from "@/tailwind.config"
 
 import { siteConfig } from "@/config/site"
 import { fontSans, fontSerif } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
+
+const variables: Record<string, string> = {}
+
+for (const [colorName, colorVariants] of Object.entries(shinePalette)) {
+  for (const [variantName, variant] of Object.entries(colorVariants)) {
+    variables[`--${colorName}-${variantName}`] = variant
+  }
+}
 
 export const metadata: Metadata = {
   title: {
@@ -35,6 +44,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             fontSans.variable,
             fontSerif.variable
           )}
+          style={{
+            ...variables,
+          }}
         >
           <div className="relative flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>
