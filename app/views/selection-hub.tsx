@@ -3,8 +3,10 @@
 import { JobData } from "@/api/airtable"
 
 import { computeSeniority } from "@/lib/compute-seniority"
+import { getDependentsLabel } from "@/lib/get-dependents-label"
 import { getJob } from "@/lib/get-job"
 import { getLevel } from "@/lib/get-level"
+import { getWorkLocationData } from "@/lib/get-work-location-data"
 import SelectionItem from "@/components/selection-item"
 
 import { Edition, SelectionSchema } from "../page.client"
@@ -64,17 +66,29 @@ export default function SelectionHub({
           />
 
           <SelectionItem
-            onClick={() => {}}
+            onClick={() => {
+              onEdit("dependents")
+            }}
             label="Tes personnes à charge"
-            value="Test"
+            value={
+              selection.dependents
+                ? getDependentsLabel(selection.dependents)
+                : null
+            }
           />
         </div>
 
         <div className="grid gap-4">
           <SelectionItem
-            onClick={() => {}}
+            onClick={() => {
+              onEdit("workLocation")
+            }}
             label="Ton lieu de travail"
-            value={null}
+            value={
+              selection.workLocation
+                ? getWorkLocationData(selection.workLocation).title
+                : null
+            }
           />
         </div>
       </div>
