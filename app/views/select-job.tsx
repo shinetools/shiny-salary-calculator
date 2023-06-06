@@ -2,9 +2,10 @@
 
 import { JobData } from "@/api/airtable"
 import { JobId } from "@/schemas/job-id.schema"
-import { ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+
+import BackButton from "../components/selection-back-button"
 
 interface SelectJobProps {
   jobData: JobData
@@ -15,14 +16,7 @@ interface SelectJobProps {
 export default function SelectJob(props: SelectJobProps) {
   return (
     <div className="flex flex-col space-y-2">
-      <Button
-        variant="ghost"
-        className="text-grey-600 flex items-center space-x-2 self-start"
-        onClick={props.onPrev}
-      >
-        <ArrowLeft size="1em" />
-        <span>Retour</span>
-      </Button>
+      <BackButton onPrev={props.onPrev} />
 
       <h2 className="font-serif text-2xl">Sélectionne ton équipe</h2>
 

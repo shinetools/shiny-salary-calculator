@@ -2,13 +2,14 @@
 
 import { JobData } from "@/api/airtable"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { differenceInYears, isValid } from "date-fns"
-import { ArrowLeft } from "lucide-react"
+import { isValid } from "date-fns"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+
+import BackButton from "../components/selection-back-button"
 
 const seniorityFormSchema = z.object({
   careerStart: z
@@ -56,14 +57,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       )}
       className="space-y-2"
     >
-      <Button
-        variant="ghost"
-        className="text-grey-600 flex items-center space-x-2 self-start"
-        onClick={props.onPrev}
-      >
-        <ArrowLeft size="1em" />
-        <span>Retour</span>
-      </Button>
+      <BackButton onPrev={props.onPrev} />
 
       <h2 className="font-serif text-2xl">Sélectionne ta séniorité</h2>
 

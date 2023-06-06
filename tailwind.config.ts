@@ -77,7 +77,7 @@ const tailwindConfig = {
         foreground: shinePalette.grey[100],
       },
       secondary: {
-        DEFAULT: shinePalette.grey[300],
+        DEFAULT: shinePalette.grey[200],
         foreground: shinePalette.grey[800],
       },
       destructive: {
