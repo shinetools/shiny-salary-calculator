@@ -1,43 +1,80 @@
-import { jobSchema } from "@/schemas/job.schema"
-import { levelSchema } from "@/schemas/level.schema"
-import Airtable from "airtable"
-import { z } from "zod"
+import Airtable, { FieldSet, Records } from "airtable"
 
 import ENV from "@/lib/env"
 
-Airtable.configure({ apiKey: ENV.AIRTABLE_API_KEY })
+import {
+  dependentsDataSchema,
+  jobCategoriesDataSchema,
+  jobsDataSchema,
+  levelsDataSchema,
+  seniorityDataSchema,
+  workLocationDataSchema,
+} from "./airtable-schemas"
 
-const levelsSchema = z.array(levelSchema)
-const jobsSchema = z.array(jobSchema)
+Airtable.configure({ apiKey: ENV.AIRTABLE_API_KEY })
 
 const base = Airtable.base(ENV.AIRTABLE_BASE_ID)
 
+const formatRecords = (records: Records<FieldSet>) =>
+  records.map(({ id, fields }) => ({ ...fields, id }))
+
 export const getJobData = async () => {
-  const [jobRecords, levelRecords] = await Promise.all([
+  const [
+    jobsData,
+    levelsData,
+    categoriesData,
+    seniorityBonusData,
+    workLocationBonusData,
+    dependentsBonusData,
+  ] = await Promise.all([
     base
       .table("jobs")
       .select({ view: "main" })
       .all()
-      .then((records) => records.map(({ id, fields }) => ({ ...fields, id }))),
+      .then((records) => jobsDataSchema.parse(formatRecords(records))),
 
     base
       .table("levels")
       .select({ view: "main" })
       .all()
+      .then((records) => levelsDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("categories")
+      .select({ view: "main" })
+      .all()
+      .then((records) => jobCategoriesDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("seniority_bonus")
+      .select({ view: "main" })
+      .all()
       .then((records) =>
-        records.map(({ fields, id, ...rest }) => ({ id, ...fields }))
+        seniorityDataSchema
+          .parse(formatRecords(records))
+          .sort((a, b) => (a.seniority < b.seniority ? 1 : -1))
       ),
+
+    base
+      .table("location_bonus")
+      .select({ view: "main" })
+      .all()
+      .then((records) => workLocationDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("dependents_bonus")
+      .select({ view: "main" })
+      .all()
+      .then((records) => dependentsDataSchema.parse(formatRecords(records))),
   ])
 
-  const levels = levelsSchema.parse(levelRecords)
-  const jobs = jobsSchema.parse(jobRecords)
-
   return {
-    levels,
-    jobs: jobs.map((job) => ({
-      ...job,
-      levels: levels.filter((level) => level.jobId === job.id),
-    })),
+    jobsData,
+    levelsData,
+    jobCategoriesData: categoriesData,
+    seniorityBonusData,
+    workLocationBonusData,
+    dependentsBonusData,
   }
 }
 
