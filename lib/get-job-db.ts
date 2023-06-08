@@ -1,0 +1,97 @@
+import type { JobData } from "@/api/airtable"
+import {
+  dependentsDataSchema,
+  jobsDataSchema,
+  levelsDataSchema,
+  seniorityDataSchema,
+  workLocationDataSchema,
+} from "@/api/airtable-schemas"
+import { Dependents } from "@/schemas/dependents.schema"
+import { JobId } from "@/schemas/job-id.schema"
+import { LevelId } from "@/schemas/level-id.schema"
+import { WorkLocation } from "@/schemas/work-location.schema"
+import { z } from "zod"
+
+import { ValidSelectionSchema } from "@/app/components/simulation-display"
+
+import { computeSeniority } from "./compute-seniority"
+
+export class JobDB {
+  constructor(
+    public jobs: z.infer<typeof jobsDataSchema>,
+    public levels: z.infer<typeof levelsDataSchema>,
+    public seniorityBonusData: z.infer<typeof seniorityDataSchema>,
+    public workLocationBonusData: z.infer<typeof workLocationDataSchema>,
+    public dependentsBonusData: z.infer<typeof dependentsDataSchema>
+  ) {}
+
+  getJob(jobId: JobId) {
+    return this.jobs.find((job) => job.id === jobId)!
+  }
+
+  getLevel(levelId: LevelId) {
+    return this.levels.find((level) => level.id === levelId)!
+  }
+
+  getBaseSalary(levelId: LevelId) {
+    return this.getLevel(levelId).baseSalary
+  }
+
+  getLevelsForJob(jobId: JobId) {
+    return this.levels.filter((level) => level.jobId === jobId)
+  }
+
+  getWorkLocationBonus(workLocation: WorkLocation) {
+    return this.workLocationBonusData[workLocation] ?? 0
+  }
+
+  getDependentsBonus(dependents: Dependents) {
+    return this.dependentsBonusData[dependents].bonus ?? 0
+  }
+
+  getSeniorityMultiplier = (careerStart: Date | false) => {
+    if (careerStart === false) {
+      return 0
+    }
+
+    return this.seniorityBonusData.find(
+      ({ seniority }) => computeSeniority(careerStart) >= seniority
+    )!.bonus
+  }
+
+  computeSimulationData(selection: ValidSelectionSchema) {
+    const baseSalary = this.getBaseSalary(selection.levelId)
+    const seniorityMultiplier = this.getSeniorityMultiplier(
+      selection.careerStart
+    )
+
+    const salary =
+      baseSalary +
+      baseSalary * seniorityMultiplier +
+      this.getDependentsBonus(selection.dependents) +
+      this.getWorkLocationBonus(selection.workLocation)
+
+    return {
+      salary,
+      holidaysBonus: Math.floor(salary * 0.01),
+      profitSharing: Math.floor(salary * 0.075),
+      shadowShares: Math.floor(salary * 0.125),
+    }
+  }
+}
+
+export const getJobDB = ({
+  jobsData,
+  levelsData,
+  seniorityBonusData,
+  workLocationBonusData,
+  dependentsBonusData,
+}: JobData) => {
+  return new JobDB(
+    jobsData,
+    levelsData,
+    seniorityBonusData,
+    workLocationBonusData,
+    dependentsBonusData
+  )
+}

@@ -1,10 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { JobData } from "@/api/airtable"
 import { WorkLocation } from "@/schemas/work-location.schema"
 
 import { getDependentsLabel } from "@/lib/get-dependents-label"
+import { JobDB } from "@/lib/get-job-db"
 import { getWorkLocationData } from "@/lib/get-work-location-data"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import BackButton from "../components/selection-back-button"
 
 interface SelectWorkLocationProps {
-  jobData: JobData
+  jobDB: JobDB
   onSelect: (workLocation: WorkLocation) => void
   onPrev: () => void
   workLocation: WorkLocation | null

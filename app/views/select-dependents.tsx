@@ -1,18 +1,17 @@
 "use client"
 
-import { JobData } from "@/api/airtable"
 import { Dependents } from "@/schemas/dependents.schema"
 
 import { getDependentsLabel } from "@/lib/get-dependents-label"
+import { JobDB } from "@/lib/get-job-db"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"
 
 interface SelectDependentsProps {
-  jobData: JobData
+  jobDB: JobDB
   onSelect: (dependents: Dependents) => void
   onPrev: () => void
-  careerStart: Date | null
 }
 
 export default function SelectDependents(props: SelectDependentsProps) {
@@ -29,7 +28,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
       </p>
 
       <div className="space-x-4">
-        {(["0", "1", "2", "3+"] as const).map((dependents) => (
+        {[0, 1, 2, 3].map((dependents) => (
           <Button
             onClick={() => props.onSelect(dependents)}
             variant="secondary"

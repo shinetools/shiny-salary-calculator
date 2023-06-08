@@ -1,12 +1,11 @@
 import Image from "next/image"
-import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { computeSimulationData } from "@/lib/compute-simulation-data"
+import { JobDB } from "@/lib/get-job-db"
 
 import { SelectionSchema } from "../page.client"
 
@@ -22,7 +21,7 @@ const currencyFormatter = new Intl.NumberFormat("fr", {
 const validSelectionSchema = z.object({
   jobId: jobIdSchema,
   levelId: levelIdSchema,
-  careerStart: z.date(),
+  careerStart: z.date().or(z.literal(false)),
   dependents: dependentsSchema,
   workLocation: workLocationSchema,
 })
@@ -31,7 +30,7 @@ export type ValidSelectionSchema = z.infer<typeof validSelectionSchema>
 
 interface SimulationDisplayProps {
   selection: SelectionSchema
-  jobData: JobData
+  jobDB: JobDB
 }
 
 type FinancialPerk = "holidaysBonus" | "profitSharing" | "shadowShares"
@@ -67,10 +66,9 @@ export default function SimulationDisplay(props: SimulationDisplayProps) {
   )
 
   if (completeSelectionParsing.success) {
-    const simulation = computeSimulationData({
-      jobData: props.jobData,
-      selection: completeSelectionParsing.data,
-    })
+    const simulation = props.jobDB.computeSimulationData(
+      completeSelectionParsing.data
+    )
 
     return (
       <div className="relative h-[395px] rounded-lg bg-blue-800 p-6 text-white ">
@@ -85,7 +83,7 @@ export default function SimulationDisplay(props: SimulationDisplayProps) {
         <h2 className="font-medium">Salaire annuel brut</h2>
 
         <div className="mb-8 font-serif text-4xl">
-          {currencyFormatter.format(simulation.baseSalary)}
+          {currencyFormatter.format(simulation.salary)}
         </div>
 
         <h2 className="mb-3 text-lg font-medium">Avantages additionnels :</h2>

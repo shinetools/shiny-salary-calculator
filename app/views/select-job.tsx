@@ -1,14 +1,14 @@
 "use client"
 
-import { JobData } from "@/api/airtable"
 import { JobId } from "@/schemas/job-id.schema"
 
+import { JobDB } from "@/lib/get-job-db"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"
 
 interface SelectJobProps {
-  jobData: JobData
+  jobDB: JobDB
   onSelect: (jobId: JobId) => void
   onPrev: () => void
 }
@@ -21,7 +21,7 @@ export default function SelectJob(props: SelectJobProps) {
       <h2 className="font-serif text-2xl">Sélectionne ton équipe</h2>
 
       <div className="flex flex-wrap space-x-2 space-y-2">
-        {props.jobData.jobs.map((job) => (
+        {props.jobDB.jobs.map((job) => (
           <Button
             key={job.id}
             onClick={() => props.onSelect(job.id)}

@@ -9,6 +9,8 @@ import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
+import { getJobDB } from "@/lib/get-job-db"
+
 import SimulationDisplay from "./components/simulation-display"
 import { ParamsSchema } from "./page"
 import SelectDependents from "./views/select-dependents"
@@ -19,11 +21,16 @@ import SelectWorkLocation from "./views/select-work-location"
 import SelectionHub from "./views/selection-hub"
 
 const selectionSchema = z.object({
-  jobId: jobIdSchema.optional(),
-  levelId: levelIdSchema.optional(),
-  careerStart: z.date().nullable(),
+  jobId: jobIdSchema.nullable(),
+  levelId: levelIdSchema.nullable(),
   dependents: dependentsSchema.nullable(),
   workLocation: workLocationSchema.nullable(),
+  careerStart: z
+    .date()
+    // `undefined` is for unprovided value
+    .nullable()
+    // `false` is for a candidate that has zero XP
+    .or(z.literal(false)),
 })
 
 export type SelectionSchema = z.infer<typeof selectionSchema>
@@ -41,11 +48,13 @@ export type Edition =
   | "workLocation"
 
 export default function IndexPageClient(props: IndexPageClientProps) {
+  const jobDB = getJobDB(props.jobData)
+
   const [editing, setEditing] = useState<Edition | null>(null)
 
   const [selection, setSelection] = useState<SelectionSchema>({
-    jobId: props.params.jobId,
-    levelId: props.params.levelId,
+    jobId: props.params.jobId ?? null,
+    levelId: props.params.levelId ?? null,
     careerStart: null,
     dependents: null,
     workLocation: null,
@@ -62,11 +71,11 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   return (
                     <SelectJob
                       onSelect={(jobId) => {
-                        setSelection({ ...selection, jobId })
+                        setSelection({ ...selection, jobId, levelId: null })
                         setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
-                      jobData={props.jobData}
+                      jobDB={jobDB}
                     />
                   )
 
@@ -78,7 +87,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                         setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
-                      jobData={props.jobData}
+                      jobDB={jobDB}
                       jobId={selection.jobId!}
                     />
                   )
@@ -91,7 +100,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                         setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
-                      jobData={props.jobData}
+                      jobDB={jobDB}
                       careerStart={selection.careerStart}
                     />
                   )
@@ -104,8 +113,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                         setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
-                      jobData={props.jobData}
-                      careerStart={selection.careerStart}
+                      jobDB={jobDB}
                     />
                   )
 
@@ -117,7 +125,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                         setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
-                      jobData={props.jobData}
+                      jobDB={jobDB}
                       workLocation={selection.workLocation}
                     />
                   )
@@ -126,7 +134,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   return (
                     <SelectionHub
                       selection={selection}
-                      jobData={props.jobData}
+                      jobData={jobDB}
                       onEdit={(edition) => setEditing(edition)}
                     />
                   )
@@ -134,7 +142,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
             })()}
           </div>
 
-          <SimulationDisplay jobData={props.jobData} selection={selection} />
+          <SimulationDisplay jobDB={jobDB} selection={selection} />
         </div>
       </section>
 

@@ -1,50 +1,93 @@
 "use client"
 
-import { JobData } from "@/api/airtable"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { isValid } from "date-fns"
+import { isPast, isValid } from "date-fns"
+import { GraduationCap } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { JobDB } from "@/lib/get-job-db"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import BackButton from "../components/selection-back-button"
 
+function monthsForLocale(localeName: "fr-FR") {
+  const { format } = new Intl.DateTimeFormat(localeName, { month: "long" })
+
+  return [...Array(12).keys()].map((m) =>
+    format(new Date(Date.UTC(2023, m % 12)))
+  )
+}
+
 const seniorityFormSchema = z.object({
   careerStart: z
-    .string()
+    .discriminatedUnion("hasZeroXP", [
+      z.object({
+        hasZeroXP: z.literal(true),
+        month: z.literal(null),
+        year: z.literal(null),
+      }),
+
+      z.object({
+        hasZeroXP: z.literal(false),
+        month: z.string(),
+        year: z.string().min(4),
+      }),
+    ])
+
     .transform((val) => {
-      if (!val) {
+      if (val.hasZeroXP) {
         return false
       }
 
-      const date = new Date(val)
-
-      if (isValid(date) === false) {
-        return false
-      }
+      const date = new Date(
+        `${val.year}-${val.month.toString().padStart(2, "0")}-01`
+      )
 
       return date
     })
-    .pipe(z.date().min(new Date("1970-01-01")).max(new Date())),
+    .refine((careerStartDate) => {
+      // The candidate has zero XP.
+      if (careerStartDate === false) {
+        return true
+      }
+
+      return isValid(careerStartDate) && isPast(careerStartDate)
+    }),
 })
 
 interface SelectSeniorityProps {
-  jobData: JobData
-  onSelect: (seniority: Date) => void
+  jobDB: JobDB
+  onSelect: (seniority: Date | false) => void
   onPrev: () => void
-  careerStart: Date | null
+  careerStart: Date | null | false
 }
 
 export default function SelectSeniority(props: SelectSeniorityProps) {
   const form = useForm<
     z.input<typeof seniorityFormSchema>,
     undefined,
-    z.infer<typeof seniorityFormSchema>
+    z.output<typeof seniorityFormSchema>
   >({
     defaultValues: {
-      careerStart: props.careerStart?.toString() ?? "",
+      careerStart:
+        props.careerStart === false
+          ? { hasZeroXP: true }
+          : {
+              hasZeroXP: false,
+              month: props.careerStart?.getMonth().toString(),
+              year: props.careerStart?.getFullYear().toString(),
+            },
     },
     mode: "onChange",
     resolver: zodResolver(seniorityFormSchema),
@@ -55,29 +98,78 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       onSubmit={form.handleSubmit(({ careerStart }) =>
         props.onSelect(careerStart)
       )}
-      className="space-y-2"
     >
       <BackButton onPrev={props.onPrev} />
 
       <h2 className="font-serif text-2xl">Sélectionne ta séniorité</h2>
 
-      <p className="text-muted-foreground">
+      <p className="text-muted-foreground mb-8">
         Indique la date de ton premier emploi, après tes études (au mois près)
       </p>
 
-      <div className="pt-8">
+      <div className="mb-6 grid grid-cols-2 gap-4">
         <Controller
           control={form.control}
-          name="careerStart"
+          name="careerStart.month"
           render={({ field }) => (
-            <Input type="date" className="max-w-xs" {...field} />
+            <Select
+              onValueChange={(val) => {
+                form.setValue("careerStart.hasZeroXP", false)
+                field.onChange(val)
+              }}
+              value={field.value ?? ""}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Mois" />
+              </SelectTrigger>
+
+              <SelectContent>
+                {monthsForLocale("fr-FR").map((month, index) => (
+                  <SelectItem value={index.toString()} key={month}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
+        />
+
+        <Input
+          type="number"
+          placeholder="Année"
+          {...form.register("careerStart.year", {
+            onChange() {
+              form.setValue("careerStart.hasZeroXP", false)
+            },
+          })}
+          onKeyDown={(event) => {
+            /**
+             * I can't understand why pressing enter on this input will close the form
+             * WITHOUT submitting it. Meaning validation is not evaluated, and data is lost.
+             */
+            if (event.key === "Enter") event.preventDefault()
+          }}
         />
       </div>
 
-      <Button type="submit" isDisabled={form.formState.isValid === false}>
-        Continuer
-      </Button>
+      <div className="flex items-center justify-between space-x-4">
+        <Button
+          variant="ghost"
+          onClick={() => {
+            form.setValue("careerStart.month", null)
+            form.setValue("careerStart.year", null)
+            form.setValue("careerStart.hasZeroXP", true)
+            form.handleSubmit(({ careerStart }) => props.onSelect(careerStart))
+          }}
+        >
+          <GraduationCap size="1em" className="mr-2" />
+          {"Je n'ai pas encore commencé à travailler"}
+        </Button>
+
+        <Button type="submit" isDisabled={form.formState.isValid === false}>
+          Continuer
+        </Button>
+      </div>
     </form>
   )
 }
