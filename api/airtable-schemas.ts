@@ -1,4 +1,5 @@
 import { dependentsSchema } from "@/schemas/dependents.schema"
+import { jobIdSchema } from "@/schemas/job-id.schema"
 import { jobSchema } from "@/schemas/job.schema"
 import { levelSchema } from "@/schemas/level.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
@@ -17,6 +18,14 @@ export const seniorityDataSchema = z.array(
 
 export const dependentsDataSchema = z.array(
   z.object({ dependents: dependentsSchema, bonus: z.number() })
+)
+
+export const jobCategoriesDataSchema = z.array(
+  z.object({
+    category_id: z.string(),
+    label: z.string(),
+    jobs: z.array(jobIdSchema),
+  })
 )
 
 export const workLocationDataSchema = z

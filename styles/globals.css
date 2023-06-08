@@ -43,6 +43,20 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* font-feature-settings: "rlig" 1, "calt" 1; */
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #dedcce;
+  }
+  /* Webkit */
+  *::-webkit-scrollbar {
+    background-color: transparent;
+    width: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: #dedcce;
+    border-radius: 1000px;
   }
 }

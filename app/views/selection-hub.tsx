@@ -2,8 +2,8 @@
 
 import { computeSeniority } from "@/lib/compute-seniority"
 import { getDependentsLabel } from "@/lib/get-dependents-label"
-import { JobDB } from "@/lib/get-job-db"
 import { getWorkLocationData } from "@/lib/get-work-location-data"
+import { JobDB } from "@/lib/job-db"
 import SelectionItem from "@/components/selection-item"
 
 import { Edition, SelectionSchema } from "../page.client"

@@ -4,6 +4,7 @@ import ENV from "@/lib/env"
 
 import {
   dependentsDataSchema,
+  jobCategoriesDataSchema,
   jobsDataSchema,
   levelsDataSchema,
   seniorityDataSchema,
@@ -21,6 +22,7 @@ export const getJobData = async () => {
   const [
     jobsData,
     levelsData,
+    categoriesData,
     seniorityBonusData,
     workLocationBonusData,
     dependentsBonusData,
@@ -36,6 +38,12 @@ export const getJobData = async () => {
       .select({ view: "main" })
       .all()
       .then((records) => levelsDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("categories")
+      .select({ view: "main" })
+      .all()
+      .then((records) => jobCategoriesDataSchema.parse(formatRecords(records))),
 
     base
       .table("seniority_bonus")
@@ -63,6 +71,7 @@ export const getJobData = async () => {
   return {
     jobsData,
     levelsData,
+    jobCategoriesData: categoriesData,
     seniorityBonusData,
     workLocationBonusData,
     dependentsBonusData,

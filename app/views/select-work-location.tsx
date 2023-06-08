@@ -4,8 +4,8 @@ import Image from "next/image"
 import { WorkLocation } from "@/schemas/work-location.schema"
 
 import { getDependentsLabel } from "@/lib/get-dependents-label"
-import { JobDB } from "@/lib/get-job-db"
 import { getWorkLocationData } from "@/lib/get-work-location-data"
+import { JobDB } from "@/lib/job-db"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -23,13 +23,9 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
     <div>
       <BackButton onPrev={props.onPrev} />
 
-      <h2 className="mb-2 font-serif text-2xl">
+      <h2 className="mb-8 font-serif text-2xl">
         Sélectionne ton nombre de personnes à charge
       </h2>
-
-      <p className="text-muted-foreground mb-8">
-        Bonus de 2 500 € annuel / personne à charge
-      </p>
 
       <div className="grid grid-cols-2 gap-4">
         {(

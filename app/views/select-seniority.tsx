@@ -6,15 +6,16 @@ import { GraduationCap } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { JobDB } from "@/lib/get-job-db"
+import { JobDB } from "@/lib/job-db"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -117,7 +118,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
                 form.setValue("careerStart.hasZeroXP", false)
                 field.onChange(val)
               }}
-              value={field.value ?? ""}
+              value={field.value ?? undefined}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Mois" />
@@ -155,6 +156,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       <div className="flex items-center justify-between space-x-4">
         <Button
           variant="ghost"
+          className="text-grey-700"
           onClick={() => {
             form.setValue("careerStart.month", null)
             form.setValue("careerStart.year", null)

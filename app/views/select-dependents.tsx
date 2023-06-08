@@ -3,7 +3,7 @@
 import { Dependents } from "@/schemas/dependents.schema"
 
 import { getDependentsLabel } from "@/lib/get-dependents-label"
-import { JobDB } from "@/lib/get-job-db"
+import { JobDB } from "@/lib/job-db"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"

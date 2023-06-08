@@ -15,7 +15,7 @@ export const FINANCIAL_PERKS = [
     description:
       "Versée tous les ans, après 2 ans d’ancienneté, sous réserve de résultat.",
   },
-] satisfies Readonly<
+] as const satisfies Readonly<
   {
     title: string
     description: string

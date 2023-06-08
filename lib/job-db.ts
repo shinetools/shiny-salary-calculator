@@ -1,6 +1,7 @@
 import type { JobData } from "@/api/airtable"
 import {
   dependentsDataSchema,
+  jobCategoriesDataSchema,
   jobsDataSchema,
   levelsDataSchema,
   seniorityDataSchema,
@@ -12,7 +13,7 @@ import { LevelId } from "@/schemas/level-id.schema"
 import { WorkLocation } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { ValidSelectionSchema } from "@/app/components/simulation-display"
+import { ValidSelectionSchema } from "@/app/components/simulation-panel"
 
 import { computeSeniority } from "./compute-seniority"
 
@@ -20,6 +21,7 @@ export class JobDB {
   constructor(
     public jobs: z.infer<typeof jobsDataSchema>,
     public levels: z.infer<typeof levelsDataSchema>,
+    public jobCategories: z.infer<typeof jobCategoriesDataSchema>,
     public seniorityBonusData: z.infer<typeof seniorityDataSchema>,
     public workLocationBonusData: z.infer<typeof workLocationDataSchema>,
     public dependentsBonusData: z.infer<typeof dependentsDataSchema>
@@ -27,6 +29,17 @@ export class JobDB {
 
   getJob(jobId: JobId) {
     return this.jobs.find((job) => job.id === jobId)!
+  }
+
+  get jobsByCategory() {
+    return this.jobCategories.map((category) => {
+      return {
+        category,
+        jobs: category.jobs.map(
+          (jobId) => this.jobs.find((job) => job.id === jobId)!
+        ),
+      }
+    })
   }
 
   getLevel(levelId: LevelId) {
@@ -83,6 +96,7 @@ export class JobDB {
 export const getJobDB = ({
   jobsData,
   levelsData,
+  jobCategoriesData,
   seniorityBonusData,
   workLocationBonusData,
   dependentsBonusData,
@@ -90,6 +104,7 @@ export const getJobDB = ({
   return new JobDB(
     jobsData,
     levelsData,
+    jobCategoriesData,
     seniorityBonusData,
     workLocationBonusData,
     dependentsBonusData

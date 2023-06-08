@@ -9,9 +9,9 @@ import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { getJobDB } from "@/lib/get-job-db"
+import { getJobDB } from "@/lib/job-db"
 
-import SimulationDisplay from "./components/simulation-display"
+import SimulationDisplay from "./components/simulation-panel"
 import { ParamsSchema } from "./page"
 import SelectDependents from "./views/select-dependents"
 import SelectJob from "./views/select-job"
@@ -63,8 +63,8 @@ export default function IndexPageClient(props: IndexPageClientProps) {
   return (
     <div>
       <section className="bg-grey-100 mb-4 rounded-2xl p-5">
-        <div className="grid grid-cols-[1fr_385px] space-x-12">
-          <div className="relative">
+        <div className="grid grid-cols-[1fr_385px] grid-rows-[420px] space-x-12">
+          <div className="relative overflow-y-scroll">
             {(() => {
               switch (editing) {
                 case "job":

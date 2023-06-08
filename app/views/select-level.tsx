@@ -3,7 +3,7 @@
 import { JobId } from "@/schemas/job-id.schema"
 import { LevelId } from "@/schemas/level-id.schema"
 
-import { JobDB } from "@/lib/get-job-db"
+import { JobDB } from "@/lib/job-db"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"
