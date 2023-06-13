@@ -21,7 +21,7 @@ export default function SelectJob(props: SelectJobProps) {
       <h2 className="mb-4 font-serif text-2xl">Sélectionne ton équipe</h2>
 
       <div className="-ml-2 space-y-4">
-        {props.jobDB.jobsByCategory.map(({ category, jobs }) => (
+        {props.jobDB.getJobsByCategory.map(({ category, jobs }) => (
           <div>
             <h3 className="ml-2 text-lg font-medium">{category.label}</h3>
 
