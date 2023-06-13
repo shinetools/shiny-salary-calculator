@@ -1,4 +1,5 @@
 import "@/styles/globals.css"
+
 import { Metadata } from "next"
 import { shinePalette } from "@/tailwind.config"
 
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <head />
         <body
           className={cn(
-            "bg-background min-h-screen font-sans antialiased",
+            "min-h-screen font-sans antialiased",
             fontSans.variable,
             fontSerif.variable
           )}

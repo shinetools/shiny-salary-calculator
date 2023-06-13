@@ -1,15 +1,18 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
+import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
 import { getJobDB } from "@/lib/job-db"
+import { cn } from "@/lib/utils"
 
 import SimulationDisplay from "./components/simulation-panel"
 import { ParamsSchema } from "./page"
@@ -155,6 +158,41 @@ export default function IndexPageClient(props: IndexPageClientProps) {
         >
           {"transparence des salaires chez Shine"}
         </Link>
+      </div>
+
+      <div className="mt-12">
+        <h1 className="mb-4 font-serif text-3xl">
+          {"Plein d'autres avantages"}
+        </h1>
+
+        <div className="flex flex-wrap space-x-4 space-y-4">
+          {jobDB.perksData.map((perk) => (
+            <div
+              key={perk.title_en}
+              className={cn(
+                "bg-grey-100 flex h-[62px] items-center space-x-3 rounded-lg p-2 pr-3",
+                "first-of-type:ml-4 first-of-type:mt-4"
+              )}
+            >
+              <div
+                className={cn(
+                  "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
+                )}
+              >
+                <Image width={24} height={24} src={perk.icon.url} alt="" />
+              </div>
+
+              <ReactMarkdown
+                className={cn(
+                  "prose prose-strong:font-medium prose-strong:text-primary prose-p:text-grey-700 prose-p:leading-4 prose-strong:text-sm prose-p:text-xs",
+                  "whitespace-pre-line"
+                )}
+              >
+                {jobDB.getLocale(perk.title)}
+              </ReactMarkdown>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

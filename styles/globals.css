@@ -42,7 +42,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-grey-200 text-foreground;
   }
 
   /* Firefox */

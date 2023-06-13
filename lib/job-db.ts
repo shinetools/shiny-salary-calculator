@@ -4,6 +4,8 @@ import {
   jobCategoriesDataSchema,
   jobsDataSchema,
   levelsDataSchema,
+  localesDataSchema,
+  perksDataSchema,
   seniorityDataSchema,
   workLocationDataSchema,
 } from "@/api/airtable-schemas"
@@ -24,14 +26,20 @@ export class JobDB {
     public jobCategories: z.infer<typeof jobCategoriesDataSchema>,
     public seniorityBonusData: z.infer<typeof seniorityDataSchema>,
     public workLocationBonusData: z.infer<typeof workLocationDataSchema>,
-    public dependentsBonusData: z.infer<typeof dependentsDataSchema>
-  ) {}
+    public dependentsBonusData: z.infer<typeof dependentsDataSchema>,
+    public perksData: z.infer<typeof perksDataSchema>,
+    public localesData: z.infer<typeof localesDataSchema>
+  ) {
+    if (typeof window !== "undefined") {
+      console.log(">>>>>>>>>", window.navigator.language)
+    }
+  }
 
   getJob(jobId: JobId) {
     return this.jobs.find((job) => job.id === jobId)!
   }
 
-  get jobsByCategory() {
+  get getJobsByCategory() {
     return this.jobCategories.map((category) => {
       return {
         category,
@@ -40,6 +48,12 @@ export class JobDB {
         ),
       }
     })
+  }
+
+  getLocale(localeId: string) {
+    const locale = this.localesData.find((locale) => locale.id === localeId)!
+
+    return locale.fr
   }
 
   getLevel(levelId: LevelId) {
@@ -100,6 +114,8 @@ export const getJobDB = ({
   seniorityBonusData,
   workLocationBonusData,
   dependentsBonusData,
+  perksData,
+  localesData,
 }: JobData) => {
   return new JobDB(
     jobsData,
@@ -107,6 +123,8 @@ export const getJobDB = ({
     jobCategoriesData,
     seniorityBonusData,
     workLocationBonusData,
-    dependentsBonusData
+    dependentsBonusData,
+    perksData,
+    localesData
   )
 }
