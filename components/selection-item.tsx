@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { Edit3 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -14,12 +15,17 @@ export default function SelectionItem(props: SelectionItemProps) {
   const hasValue = props.currentSelection !== null
 
   return (
-    <button
+    <motion.button
       onClick={props.onClick}
-      className="bg-grey-200 hover:bg-grey-200/50 flex h-[58px] items-center justify-between space-x-4 rounded-xl border px-3 py-2 text-left transition-all"
+      className="bg-grey-200 hover:bg-grey-300 flex h-[58px] items-center justify-between space-x-4 rounded-xl border px-4 py-2 text-left transition-all"
     >
       <div className="overflow-hidden">
-        <div className={cn("text-grey-600", hasValue && "text-xs")}>
+        <div
+          className={cn(
+            "text-grey-600 overflow-hidden text-ellipsis whitespace-nowrap",
+            hasValue && "text-xs"
+          )}
+        >
           {props.label}
         </div>
 
@@ -33,6 +39,6 @@ export default function SelectionItem(props: SelectionItemProps) {
       <div className="">
         <Edit3 className="text-grey-600" size={18} />
       </div>
-    </button>
+    </motion.button>
   )
 }

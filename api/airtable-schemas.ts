@@ -2,6 +2,8 @@ import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { jobSchema } from "@/schemas/job.schema"
 import { levelSchema } from "@/schemas/level.schema"
+import { localeSchema } from "@/schemas/locale.schema"
+import { perkSchema } from "@/schemas/perk.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
@@ -23,7 +25,8 @@ export const dependentsDataSchema = z.array(
 export const jobCategoriesDataSchema = z.array(
   z.object({
     category_id: z.string(),
-    label: z.string(),
+    fr_label: z.string(),
+    en_label: z.string().optional(),
     jobs: z.array(jobIdSchema),
   })
 )
@@ -41,3 +44,15 @@ export const workLocationDataSchema = z
     )
   )
   .pipe(z.record(workLocationSchema, z.number()))
+
+export const perksDataSchema = z.array(
+  z
+    .object({
+      icon: z.array(z.object({ url: z.string() })),
+      fr_title: z.string(),
+      en_title: z.string().optional(),
+    })
+    .transform((val) => ({ ...val, icon: val.icon[0] }))
+)
+
+export const localesDataSchema = z.array(localeSchema)

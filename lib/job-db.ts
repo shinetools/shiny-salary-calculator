@@ -4,6 +4,8 @@ import {
   jobCategoriesDataSchema,
   jobsDataSchema,
   levelsDataSchema,
+  localesDataSchema,
+  perksDataSchema,
   seniorityDataSchema,
   workLocationDataSchema,
 } from "@/api/airtable-schemas"
@@ -13,25 +15,29 @@ import { LevelId } from "@/schemas/level-id.schema"
 import { WorkLocation } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { ValidSelectionSchema } from "@/app/components/simulation-panel"
+import { ValidSelectionSchema } from "@/app/[lang]/components/simulation-panel"
+import { Lang } from "@/app/[lang]/page"
 
 import { computeSeniority } from "./compute-seniority"
 
 export class JobDB {
   constructor(
+    public readonly lang: Lang,
     public jobs: z.infer<typeof jobsDataSchema>,
     public levels: z.infer<typeof levelsDataSchema>,
     public jobCategories: z.infer<typeof jobCategoriesDataSchema>,
     public seniorityBonusData: z.infer<typeof seniorityDataSchema>,
     public workLocationBonusData: z.infer<typeof workLocationDataSchema>,
-    public dependentsBonusData: z.infer<typeof dependentsDataSchema>
+    public dependentsBonusData: z.infer<typeof dependentsDataSchema>,
+    public perksData: z.infer<typeof perksDataSchema>,
+    public localesData: z.infer<typeof localesDataSchema>
   ) {}
 
   getJob(jobId: JobId) {
     return this.jobs.find((job) => job.id === jobId)!
   }
 
-  get jobsByCategory() {
+  get getJobsByCategory() {
     return this.jobCategories.map((category) => {
       return {
         category,
@@ -40,6 +46,19 @@ export class JobDB {
         ),
       }
     })
+  }
+
+  getLocale(localeId: string) {
+    const locale = this.localesData.find((locale) => {
+      return locale.id === localeId
+    })
+
+    if (!locale) {
+      console.error(`Locale ${localeId} not found`)
+      return ""
+    }
+
+    return locale.fr
   }
 
   getLevel(levelId: LevelId) {
@@ -93,20 +112,28 @@ export class JobDB {
   }
 }
 
-export const getJobDB = ({
-  jobsData,
-  levelsData,
-  jobCategoriesData,
-  seniorityBonusData,
-  workLocationBonusData,
-  dependentsBonusData,
-}: JobData) => {
-  return new JobDB(
+export const getJobDB = (
+  {
     jobsData,
     levelsData,
     jobCategoriesData,
     seniorityBonusData,
     workLocationBonusData,
-    dependentsBonusData
+    dependentsBonusData,
+    perksData,
+    localesData,
+  }: JobData,
+  lang: Lang
+) => {
+  return new JobDB(
+    lang,
+    jobsData,
+    levelsData,
+    jobCategoriesData,
+    seniorityBonusData,
+    workLocationBonusData,
+    dependentsBonusData,
+    perksData,
+    localesData
   )
 }

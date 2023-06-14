@@ -1,23 +1,24 @@
 import { WorkLocation } from "@/schemas/work-location.schema"
 
+import { Lang } from "@/app/[lang]/page"
+
+import { JobDB } from "./job-db"
+
 const WORK_LOCATION_DATA = {
   "in-person": {
-    icon: "/work-location-assets/in-person.png",
-    title: "Région parisienne",
-    description:
-      "Tu bénéficieras d’une prime de siège de +3 500 € / an par équité pour le coût que représente les full-remotes.",
+    icon: "/assets/work-location-assets/in-person.png",
+    title: "selection-workLocation-inPerson-title",
+    description: "selection-workLocation-inPerson-description",
   },
   "full-remote-france": {
-    icon: "/work-location-assets/full-remote-france.png",
-    title: "Full-remote France",
-    description:
-      "Tu vis hors région parisienne, et devra te rendre dans les bureaux minimum 2j / mois (au frais de Shine).",
+    icon: "/assets/work-location-assets/full-remote-france.png",
+    title: "selection-workLocation-fullRemoteFrance-title",
+    description: "selection-workLocation-fullRemoteFrance-description",
   },
   "full-remote-europe": {
-    icon: "/work-location-assets/full-remote-europe.png",
-    title: "Full-remote Europe",
-    description:
-      "Tu vis dans l’Union Européenne, et devra te rendre dans les bureaux minimum 2 fois par an (au frais de Shine).",
+    icon: "/assets/work-location-assets/full-remote-europe.png",
+    title: "selection-workLocation-fullRemoteEurope-title",
+    description: "selection-workLocation-fullRemoteEurope-description",
   },
 } satisfies Record<
   WorkLocation,
@@ -28,6 +29,12 @@ const WORK_LOCATION_DATA = {
   }
 >
 
-export function getWorkLocationData(workLocation: WorkLocation) {
-  return WORK_LOCATION_DATA[workLocation]
+export function getWorkLocationData(workLocation: WorkLocation, jobDB: JobDB) {
+  const data = WORK_LOCATION_DATA[workLocation]
+
+  return {
+    icon: data.icon,
+    title: jobDB.getLocale(data.title),
+    description: jobDB.getLocale(data.description),
+  }
 }

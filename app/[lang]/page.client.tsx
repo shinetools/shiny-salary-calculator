@@ -1,18 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
+import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
 import { getJobDB } from "@/lib/job-db"
+import { translate } from "@/lib/translate"
+import { cn } from "@/lib/utils"
 
 import SimulationDisplay from "./components/simulation-panel"
-import { ParamsSchema } from "./page"
+import { Lang, ParamsSchema } from "./page"
 import SelectDependents from "./views/select-dependents"
 import SelectJob from "./views/select-job"
 import SelectLevel from "./views/select-level"
@@ -36,8 +40,8 @@ const selectionSchema = z.object({
 export type SelectionSchema = z.infer<typeof selectionSchema>
 
 interface IndexPageClientProps {
-  params: ParamsSchema
   jobData: JobData
+  lang: Lang
 }
 
 export type Edition =
@@ -48,13 +52,15 @@ export type Edition =
   | "workLocation"
 
 export default function IndexPageClient(props: IndexPageClientProps) {
-  const jobDB = getJobDB(props.jobData)
+  const searchParams = useSearchParams()
+
+  const jobDB = getJobDB(props.jobData, props.lang)
 
   const [editing, setEditing] = useState<Edition | null>(null)
 
   const [selection, setSelection] = useState<SelectionSchema>({
-    jobId: props.params.jobId ?? null,
-    levelId: props.params.levelId ?? null,
+    jobId: (searchParams.get("jobId") as any) ?? null,
+    levelId: (searchParams.get("levelId") as any) ?? null,
     careerStart: null,
     dependents: null,
     workLocation: null,
@@ -62,9 +68,15 @@ export default function IndexPageClient(props: IndexPageClientProps) {
 
   return (
     <div>
-      <section className="bg-grey-100 mb-4 rounded-2xl p-5">
-        <div className="grid grid-cols-[1fr_385px] grid-rows-[420px] space-x-12">
-          <div className="relative overflow-y-scroll">
+      <section className="bg-grey-100 mb-4 rounded-2xl p-3">
+        <div
+          className={cn(
+            "grid gap-3",
+            "grid-cols-1 grid-rows-[400px_400px]",
+            "md:grid-cols-[1fr_385px] md:grid-rows-[400px]"
+          )}
+        >
+          <div className="relative overflow-y-scroll p-3 md:p-5">
             {(() => {
               switch (editing) {
                 case "job":
@@ -72,7 +84,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectJob
                       onSelect={(jobId) => {
                         setSelection({ ...selection, jobId, levelId: null })
-                        setEditing(null)
+
+                        if (selection.levelId === null) {
+                          return setEditing("level")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -84,7 +101,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectLevel
                       onSelect={(levelId) => {
                         setSelection({ ...selection, levelId })
-                        setEditing(null)
+
+                        if (selection.careerStart === null) {
+                          return setEditing("seniority")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -97,7 +119,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectSeniority
                       onSelect={(seniority) => {
                         setSelection({ ...selection, careerStart: seniority })
-                        setEditing(null)
+
+                        if (selection.dependents === null) {
+                          return setEditing("dependents")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -110,7 +137,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectDependents
                       onSelect={(dependents) => {
                         setSelection({ ...selection, dependents })
-                        setEditing(null)
+
+                        if (selection.workLocation === null) {
+                          return setEditing("workLocation")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -134,7 +166,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   return (
                     <SelectionHub
                       selection={selection}
-                      jobData={jobDB}
+                      jobDB={jobDB}
                       onEdit={(edition) => setEditing(edition)}
                     />
                   )
@@ -147,14 +179,57 @@ export default function IndexPageClient(props: IndexPageClientProps) {
       </section>
 
       <div className="px-2">
-        <span>{"En savoir plus sur notre politique de "}</span>
-        <Link
-          className="text-blue-600 transition-all hover:text-blue-700"
-          href="https://www.shine.fr/blog/la-transparence-des-salaires-chez-shine"
-          target="_blank"
+        <ReactMarkdown
+          components={{
+            a: (props) => (
+              <a
+                className="inline text-blue-600 transition-all hover:text-blue-700"
+                target="_blank"
+                {...props}
+              />
+            ),
+          }}
         >
-          {"transparence des salaires chez Shine"}
-        </Link>
+          {jobDB.getLocale("main-secondary-information")}
+        </ReactMarkdown>
+      </div>
+
+      <div className="mt-12">
+        <h1 className="mb-4 font-serif text-3xl">
+          {jobDB.getLocale("main-perks-title")}
+        </h1>
+
+        <div className="-ml-4 flex flex-wrap space-x-4 space-y-4">
+          {jobDB.perksData.map((perk) => (
+            <div
+              key={perk.fr_title}
+              className={cn(
+                "bg-grey-100 flex h-[62px] items-center space-x-3 rounded-lg p-2 pr-3",
+                "first-of-type:ml-4 first-of-type:mt-4"
+              )}
+            >
+              <div
+                className={cn(
+                  "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
+                )}
+              >
+                <Image width={24} height={24} src={perk.icon.url} alt="" />
+              </div>
+
+              <ReactMarkdown
+                className={cn(
+                  "prose prose-strong:font-medium prose-strong:text-primary prose-p:text-grey-700 prose-p:leading-4 prose-strong:text-sm prose-p:text-xs",
+                  "whitespace-pre-line"
+                )}
+              >
+                {translate(props.lang, {
+                  fr: perk.fr_title,
+                  en: perk.en_title,
+                })}
+              </ReactMarkdown>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

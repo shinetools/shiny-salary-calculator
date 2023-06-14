@@ -7,6 +7,8 @@ import {
   jobCategoriesDataSchema,
   jobsDataSchema,
   levelsDataSchema,
+  localesDataSchema,
+  perksDataSchema,
   seniorityDataSchema,
   workLocationDataSchema,
 } from "./airtable-schemas"
@@ -16,9 +18,11 @@ Airtable.configure({ apiKey: ENV.AIRTABLE_API_KEY })
 const base = Airtable.base(ENV.AIRTABLE_BASE_ID)
 
 const formatRecords = (records: Records<FieldSet>) =>
-  records.map(({ id, fields }) => ({ ...fields, id }))
+  records.map(({ id, fields }) => ({ ...fields, id: fields.id ?? id }))
 
 export const getJobData = async () => {
+  console.info(">>> FETCHING AIRTABLE DATA")
+
   const [
     jobsData,
     levelsData,
@@ -26,6 +30,8 @@ export const getJobData = async () => {
     seniorityBonusData,
     workLocationBonusData,
     dependentsBonusData,
+    perksData,
+    localesData,
   ] = await Promise.all([
     base
       .table("jobs")
@@ -66,6 +72,20 @@ export const getJobData = async () => {
       .select({ view: "main" })
       .all()
       .then((records) => dependentsDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("perks")
+      .select({ view: "main" })
+      .all()
+      .then((records) => perksDataSchema.parse(formatRecords(records))),
+
+    base
+      .table("locales")
+      .select({ view: "main" })
+      .all()
+      .then((records) => {
+        return localesDataSchema.parse(formatRecords(records))
+      }),
   ])
 
   return {
@@ -75,6 +95,8 @@ export const getJobData = async () => {
     seniorityBonusData,
     workLocationBonusData,
     dependentsBonusData,
+    perksData,
+    localesData,
   }
 }
 
