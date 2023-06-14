@@ -23,7 +23,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
       animate="visible"
       variants={motionVariants.mainContainer}
     >
-      <BackButton onPrev={props.onPrev} />
+      <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
       <h2 className="mb-2 font-serif text-2xl">
         Indique le nombre de personnes à ta charge
@@ -45,7 +45,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
             size="lg"
             key={dependents}
           >
-            {getDependentsLabel(dependents)}
+            {getDependentsLabel(dependents, props.jobDB.lang)}
           </MotionButton>
         ))}
       </motion.div>

@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 
 import { JobDB } from "@/lib/job-db"
 import { motionVariants } from "@/lib/motion-variants"
+import { translate } from "@/lib/translate"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"
@@ -25,9 +26,11 @@ export default function SelectLevel(props: SelectLevelProps) {
       variants={motionVariants.mainContainer}
       className="flex flex-col space-y-2"
     >
-      <BackButton onPrev={props.onPrev} />
+      <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
-      <h2 className="font-serif text-2xl">Sélectionne ton niveau</h2>
+      <h2 className="font-serif text-2xl">
+        {props.jobDB.getLocale("selection-level-title")}
+      </h2>
 
       <motion.div
         className="-ml-3 flex flex-wrap space-x-3 space-y-3"
@@ -53,7 +56,10 @@ export default function SelectLevel(props: SelectLevelProps) {
               onClick={() => props.onSelect(level.id)}
               variant="secondary"
             >
-              {`${level.level} - ${level.label}`}
+              {`${level.level} - ${translate(props.jobDB.lang, {
+                fr: level.fr_label ?? "",
+                en: level.en_label,
+              })}`}
             </Button>
           </motion.div>
         ))}

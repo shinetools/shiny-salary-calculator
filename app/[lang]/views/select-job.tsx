@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 
 import { JobDB } from "@/lib/job-db"
 import { motionVariants } from "@/lib/motion-variants"
+import { translate } from "@/lib/translate"
 import { Button } from "@/components/ui/button"
 
 import BackButton from "../components/selection-back-button"
@@ -23,14 +24,24 @@ export default function SelectJob(props: SelectJobProps) {
       variants={motionVariants.mainContainer}
       className="flex flex-col"
     >
-      <BackButton onPrev={props.onPrev} />
+      <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
-      <h2 className="mb-4 font-serif text-2xl">Sélectionne ton équipe</h2>
+      <h2 className="mb-4 font-serif text-2xl">
+        {props.jobDB.getLocale("selection-job-title")}
+      </h2>
 
       <div className="-ml-3 space-y-6">
         {props.jobDB.getJobsByCategory.map(({ category, jobs }) => (
-          <motion.div variants={motionVariants.listItemsContainer}>
-            <h3 className="ml-3 text-lg font-medium">{category.label}</h3>
+          <motion.div
+            variants={motionVariants.listItemsContainer}
+            key={category.category_id}
+          >
+            <h3 className="ml-3 text-lg font-medium">
+              {translate(props.jobDB.lang, {
+                fr: category.fr_label,
+                en: category.en_label,
+              })}
+            </h3>
 
             <div className="flex flex-wrap space-x-3 space-y-3">
               {jobs.map((job) => (
@@ -43,7 +54,10 @@ export default function SelectJob(props: SelectJobProps) {
                     onClick={() => props.onSelect(job.id)}
                     variant="secondary"
                   >
-                    {job.label}
+                    {translate(props.jobDB.lang, {
+                      fr: job.fr_label,
+                      en: job.en_label,
+                    })}
                   </Button>
                 </motion.div>
               ))}

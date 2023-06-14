@@ -9,15 +9,12 @@ import { z } from "zod"
 
 import { JobDB } from "@/lib/job-db"
 import { motionVariants } from "@/lib/motion-variants"
-import { cn } from "@/lib/utils"
-import { Button, MotionButton } from "@/components/ui/button"
-import { Input, MotionInput } from "@/components/ui/input"
+import { MotionButton } from "@/components/ui/button"
+import { MotionInput } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -105,12 +102,14 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
         props.onSelect(careerStart)
       )}
     >
-      <BackButton onPrev={props.onPrev} />
+      <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
-      <h2 className="font-serif text-2xl">Sélectionne ta séniorité</h2>
+      <h2 className="font-serif text-2xl">
+        {props.jobDB.getLocale("selection-seniority-title")}
+      </h2>
 
       <p className="text-muted-foreground mb-8">
-        Indique la date de ton premier emploi, après tes études (au mois près)
+        {props.jobDB.getLocale("selection-seniority-subtitle")}
       </p>
 
       <motion.div
@@ -130,7 +129,11 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
                 value={field.value ?? undefined}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Mois" />
+                  <SelectValue
+                    placeholder={props.jobDB.getLocale(
+                      "selection-seniority-labelMonth"
+                    )}
+                  />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -148,7 +151,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
         <MotionInput
           variants={motionVariants.itemContainerWithFade}
           type="number"
-          placeholder="Année"
+          placeholder={props.jobDB.getLocale("selection-seniority-labelYear")}
           {...form.register("careerStart.year", {
             onChange() {
               form.setValue("careerStart.hasZeroXP", false)
@@ -180,7 +183,8 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
           }}
         >
           <GraduationCap size="1em" className="mr-2" />
-          {"Je n'ai pas encore commencé à travailler"}
+
+          {props.jobDB.getLocale("selection-seniority-newGrad")}
         </MotionButton>
 
         <MotionButton
@@ -188,7 +192,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
           type="submit"
           isDisabled={form.formState.isValid === false}
         >
-          Continuer
+          {props.jobDB.getLocale("selection-seniority-cta")}
         </MotionButton>
       </motion.div>
     </motion.form>

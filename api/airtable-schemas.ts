@@ -25,7 +25,8 @@ export const dependentsDataSchema = z.array(
 export const jobCategoriesDataSchema = z.array(
   z.object({
     category_id: z.string(),
-    label: z.string(),
+    fr_label: z.string(),
+    en_label: z.string().optional(),
     jobs: z.array(jobIdSchema),
   })
 )

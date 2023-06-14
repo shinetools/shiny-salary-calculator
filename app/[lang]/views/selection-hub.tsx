@@ -7,20 +7,21 @@ import { getDependentsLabel } from "@/lib/get-dependents-label"
 import { getWorkLocationData } from "@/lib/get-work-location-data"
 import { JobDB } from "@/lib/job-db"
 import { motionVariants } from "@/lib/motion-variants"
+import { translate } from "@/lib/translate"
 import SelectionItem from "@/components/selection-item"
 
 import { Edition, SelectionSchema } from "../page.client"
 
 interface SelectionHubProps {
   selection: SelectionSchema
-  jobData: JobDB
+  jobDB: JobDB
   onEdit: (edition: Edition) => void
 }
 
 export default function SelectionHub({
   onEdit,
   selection,
-  jobData,
+  jobDB,
 }: SelectionHubProps) {
   return (
     <motion.div
@@ -29,7 +30,7 @@ export default function SelectionHub({
       variants={motionVariants.mainContainer}
     >
       <h2 className="mb-2 font-serif text-3xl">
-        {jobData.getLocale("main-title")}
+        {jobDB.getLocale("main-title")}
       </h2>
 
       <motion.div
@@ -39,9 +40,14 @@ export default function SelectionHub({
         <div className="grid grid-cols-2 gap-4">
           <SelectionItem
             onClick={() => onEdit("job")}
-            label={jobData.getLocale("main-label-job")}
+            label={jobDB.getLocale("main-label-job")}
             currentSelection={
-              selection.jobId ? jobData.getJob(selection.jobId).label : null
+              selection.jobId
+                ? translate(jobDB.lang, {
+                    fr: jobDB.getJob(selection.jobId).fr_label,
+                    en: jobDB.getJob(selection.jobId).en_label,
+                  })
+                : null
             }
           />
           <SelectionItem
@@ -51,10 +57,10 @@ export default function SelectionHub({
               }
               onEdit("level")
             }}
-            label={jobData.getLocale("main-label-level")}
+            label={jobDB.getLocale("main-label-level")}
             currentSelection={
               selection.levelId
-                ? jobData.getLevel(selection.levelId).level ?? ""
+                ? jobDB.getLevel(selection.levelId).level ?? ""
                 : null
             }
           />
@@ -65,7 +71,7 @@ export default function SelectionHub({
             onClick={() => {
               onEdit("seniority")
             }}
-            label={jobData.getLocale("main-label-seniority")}
+            label={jobDB.getLocale("main-label-seniority")}
             currentSelection={(() => {
               if (selection.careerStart === null) {
                 return null
@@ -77,7 +83,7 @@ export default function SelectionHub({
 
               const seniority = computeSeniority(selection.careerStart)
 
-              return jobData.lang === "fr"
+              return jobDB.lang === "fr"
                 ? `${seniority} an${seniority > 1 ? "s" : ""}`
                 : `${seniority} year${seniority > 1 ? "s" : ""}`
             })()}
@@ -87,11 +93,11 @@ export default function SelectionHub({
             onClick={() => {
               onEdit("dependents")
             }}
-            label={jobData.getLocale("main-label-dependents")}
+            label={jobDB.getLocale("main-label-dependents")}
             currentSelection={
               selection.dependents === null
                 ? null
-                : getDependentsLabel(selection.dependents)
+                : getDependentsLabel(selection.dependents, jobDB.lang)
             }
           />
         </div>
@@ -101,10 +107,10 @@ export default function SelectionHub({
             onClick={() => {
               onEdit("workLocation")
             }}
-            label={jobData.getLocale("main-label-workLocation")}
+            label={jobDB.getLocale("main-label-workLocation")}
             currentSelection={
               selection.workLocation
-                ? getWorkLocationData(selection.workLocation).title
+                ? getWorkLocationData(selection.workLocation, jobDB).title
                 : null
             }
           />

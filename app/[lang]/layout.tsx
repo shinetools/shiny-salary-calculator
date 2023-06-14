@@ -6,7 +6,6 @@ import { shinePalette } from "@/tailwind.config"
 import { siteConfig } from "@/config/site"
 import { fontSans, fontSerif } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 const variables: Record<string, string> = {}
 
@@ -52,7 +51,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className="relative flex min-h-screen flex-col">
             <div className="flex-1">{children}</div>
           </div>
-          <TailwindIndicator />
         </body>
       </html>
     </>

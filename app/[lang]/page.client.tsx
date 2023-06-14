@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
@@ -159,7 +158,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   return (
                     <SelectionHub
                       selection={selection}
-                      jobData={jobDB}
+                      jobDB={jobDB}
                       onEdit={(edition) => setEditing(edition)}
                     />
                   )
@@ -172,19 +171,24 @@ export default function IndexPageClient(props: IndexPageClientProps) {
       </section>
 
       <div className="px-2">
-        <span>{"En savoir plus sur notre politique de "}</span>
-        <Link
-          className="text-blue-600 transition-all hover:text-blue-700"
-          href="https://www.shine.fr/blog/la-transparence-des-salaires-chez-shine"
-          target="_blank"
+        <ReactMarkdown
+          components={{
+            a: (props) => (
+              <a
+                className="inline text-blue-600 transition-all hover:text-blue-700"
+                target="_blank"
+                {...props}
+              />
+            ),
+          }}
         >
-          {"transparence des salaires chez Shine"}
-        </Link>
+          {jobDB.getLocale("main-secondary-information")}
+        </ReactMarkdown>
       </div>
 
       <div className="mt-12">
         <h1 className="mb-4 font-serif text-3xl">
-          {"Plein d'autres avantages"}
+          {jobDB.getLocale("main-perks-title")}
         </h1>
 
         <div className="-ml-4 flex flex-wrap space-x-4 space-y-4">

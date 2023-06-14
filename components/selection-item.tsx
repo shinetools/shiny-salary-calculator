@@ -3,7 +3,6 @@
 import { motion } from "framer-motion"
 import { Edit3 } from "lucide-react"
 
-import { motionVariants } from "@/lib/motion-variants"
 import { cn } from "@/lib/utils"
 
 interface SelectionItemProps {

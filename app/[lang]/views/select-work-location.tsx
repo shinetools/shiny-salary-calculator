@@ -26,10 +26,10 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
       animate="visible"
       variants={motionVariants.mainContainer}
     >
-      <BackButton onPrev={props.onPrev} />
+      <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
       <h2 className="mb-8 font-serif text-2xl">
-        Sélectionne ton lieu de travail
+        {props.jobDB.getLocale("selection-workLocation-title")}
       </h2>
 
       <motion.div
@@ -50,16 +50,18 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
             <div>
               <div className="mb-2 flex items-center space-x-2">
                 <Image
-                  src={getWorkLocationData(workLocation).icon}
+                  src={getWorkLocationData(workLocation, props.jobDB).icon}
                   height={24}
                   width={24}
                   alt=""
                 />
-                <span>{getWorkLocationData(workLocation).title}</span>
+                <span>
+                  {getWorkLocationData(workLocation, props.jobDB).title}
+                </span>
               </div>
 
               <div className="text-grey-600 text-sm font-normal">
-                {getWorkLocationData(workLocation).description}
+                {getWorkLocationData(workLocation, props.jobDB).description}
               </div>
             </div>
           </MotionButton>

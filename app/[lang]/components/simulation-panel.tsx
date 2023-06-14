@@ -48,16 +48,16 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         className="absolute right-2 top-2"
       />
 
-      <div className="font-medium">Salaire annuel brut</div>
+      <div className="font-medium">
+        {props.jobDB.getLocale("simulation-title")}
+      </div>
 
       <div className="mb-8 font-serif text-4xl font-medium blur-md">
         {"42 726 €"}
       </div>
 
       <div className="absolute inset-x-10 top-[50%] text-center text-sm text-[#9BAEB2]">
-        {
-          "Complète les informations sur la gauche pour estimer ton futur salaire"
-        }
+        {props.jobDB.getLocale("simulation-emptyMessage")}
       </div>
     </div>
   )

@@ -1,16 +1,19 @@
 import { ArrowLeft } from "lucide-react"
 
+import { JobDB } from "@/lib/job-db"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 interface BackButtonProps {
   onPrev: () => void
   className?: string
+  jobDB: JobDB
 }
 
 export default function BackButton({
   onPrev,
   className,
+  jobDB,
   ...props
 }: BackButtonProps) {
   return (
@@ -25,7 +28,7 @@ export default function BackButton({
       {...props}
     >
       <ArrowLeft size="1em" />
-      <span>Retour</span>
+      <span>{jobDB.getLocale("generic-backButtonLabel")}</span>
     </Button>
   )
 }

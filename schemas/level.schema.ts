@@ -5,7 +5,8 @@ import { levelIdSchema } from "./level-id.schema"
 
 export const levelSchema = z.object({
   id: levelIdSchema,
-  label: z.string().optional(),
+  fr_label: z.string().optional(),
+  en_label: z.string().optional(),
   level: z.string(),
   baseSalary: z.number().min(0).max(1000000),
   jobId: z
