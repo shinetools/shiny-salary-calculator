@@ -55,11 +55,15 @@ export default function SelectLevel(props: SelectLevelProps) {
             <Button
               onClick={() => props.onSelect(level.id)}
               variant="secondary"
+              className="block h-auto"
             >
-              {`${level.level} - ${translate(props.jobDB.lang, {
-                fr: level.fr_label ?? "",
-                en: level.en_label,
-              })}`}
+              <span className="block">{level.level}</span>
+              <span className="text-grey-600 block text-xs font-normal">
+                {translate(props.jobDB.lang, {
+                  fr: level.fr_label ?? "",
+                  en: level.en_label,
+                })}
+              </span>
             </Button>
           </motion.div>
         ))}

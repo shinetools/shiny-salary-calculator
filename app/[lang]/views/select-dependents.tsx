@@ -26,15 +26,15 @@ export default function SelectDependents(props: SelectDependentsProps) {
       <BackButton onPrev={props.onPrev} jobDB={props.jobDB} />
 
       <h2 className="mb-2 font-serif text-2xl">
-        Indique le nombre de personnes à ta charge
+        {props.jobDB.getLocale("selection-dependents-title")}
       </h2>
 
-      <p className="text-muted-foreground mb-8">
-        Bonus de 2 500 € annuel par personne à charge
+      <p className="text-muted-foreground mb-6">
+        {props.jobDB.getLocale("selection-dependents-description")}
       </p>
 
       <motion.div
-        className="space-x-4"
+        className="-ml-3 flex flex-wrap space-x-3 space-y-3"
         variants={motionVariants.listItemsContainer}
       >
         {[0, 1, 2, 3].map((dependents) => (
@@ -42,6 +42,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
             variants={motionVariants.itemContainerWithFade}
             onClick={() => props.onSelect(dependents)}
             variant="secondary"
+            className="first-of-type:ml-3 first-of-type:mt-3"
             size="lg"
             key={dependents}
           >

@@ -20,7 +20,12 @@ export default function SelectionItem(props: SelectionItemProps) {
       className="bg-grey-200 hover:bg-grey-300 flex h-[58px] items-center justify-between space-x-4 rounded-xl border px-4 py-2 text-left transition-all"
     >
       <div className="overflow-hidden">
-        <div className={cn("text-grey-600", hasValue && "text-xs")}>
+        <div
+          className={cn(
+            "text-grey-600 overflow-hidden text-ellipsis whitespace-nowrap",
+            hasValue && "text-xs"
+          )}
+        >
           {props.label}
         </div>
 

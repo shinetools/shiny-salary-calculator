@@ -67,8 +67,14 @@ export default function IndexPageClient(props: IndexPageClientProps) {
   return (
     <div>
       <section className="bg-grey-100 mb-4 rounded-2xl p-3">
-        <div className="grid grid-cols-[1fr_385px] grid-rows-[400px] gap-3">
-          <div className="relative overflow-y-scroll p-5">
+        <div
+          className={cn(
+            "grid gap-3",
+            "grid-cols-1 grid-rows-[400px_400px]",
+            "md:grid-cols-[1fr_385px] md:grid-rows-[400px]"
+          )}
+        >
+          <div className="relative overflow-y-scroll p-3 md:p-5">
             {(() => {
               switch (editing) {
                 case "job":
