@@ -3,7 +3,6 @@ import { jobIdSchema } from "@/schemas/job-id.schema"
 import { jobSchema } from "@/schemas/job.schema"
 import { levelSchema } from "@/schemas/level.schema"
 import { localeSchema } from "@/schemas/locale.schema"
-import { perkSchema } from "@/schemas/perk.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 

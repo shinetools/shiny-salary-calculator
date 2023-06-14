@@ -59,9 +59,13 @@ export default function IndexPageClient(props: IndexPageClientProps) {
 
   const [editing, setEditing] = useState<Edition | null>(null)
 
+  const initialJob = jobDB.jobs.find(
+    (job) => job.job_code === searchParams.get("job_code")
+  )
+
   const [selection, setSelection] = useState<SelectionSchema>({
-    jobId: (searchParams.get("jobId") as any) ?? null,
-    levelId: (searchParams.get("levelId") as any) ?? null,
+    jobId: initialJob?.id ?? null,
+    levelId: null,
     careerStart: null,
     dependents: null,
     workLocation: null,

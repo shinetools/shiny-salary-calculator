@@ -18,7 +18,14 @@ export default function middleware(request: NextRequest) {
         loose: true,
       }) || defaultLocale
 
-    return NextResponse.redirect(new URL(`/${locale}/${pathname}`, request.url))
+    const searchParams = request.nextUrl.searchParams.toString()
+
+    const url = new URL(
+      `/${locale}/${pathname}${searchParams ? `?${searchParams}` : ""}`,
+      request.url
+    )
+
+    return NextResponse.redirect(url)
   }
 }
 
