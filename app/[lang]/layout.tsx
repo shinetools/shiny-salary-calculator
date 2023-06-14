@@ -36,7 +36,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html suppressHydrationWarning>
         <head />
         <body
           className={cn(
@@ -48,9 +48,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             ...variables,
           }}
         >
-          <div className="relative flex min-h-screen flex-col">
-            <div className="flex-1">{children}</div>
-          </div>
+          {children}
         </body>
       </html>
     </>

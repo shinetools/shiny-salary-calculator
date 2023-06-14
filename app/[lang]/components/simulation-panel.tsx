@@ -6,6 +6,7 @@ import { workLocationSchema } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
 import { JobDB } from "@/lib/job-db"
+import { cn } from "@/lib/utils"
 
 import { SelectionSchema } from "../page.client"
 import SimulationResult from "./simulation-result"
@@ -23,9 +24,13 @@ export type ValidSelectionSchema = z.infer<typeof validSelectionSchema>
 interface SimulationPanelProps {
   selection: SelectionSchema
   jobDB: JobDB
+  className?: string
 }
 
-export default function SimulationPanel(props: SimulationPanelProps) {
+export default function SimulationPanel({
+  className,
+  ...props
+}: SimulationPanelProps) {
   const completeSelectionParsing = validSelectionSchema.safeParse(
     props.selection
   )
@@ -39,7 +44,12 @@ export default function SimulationPanel(props: SimulationPanelProps) {
   }
 
   return (
-    <div className="relative h-full self-stretch rounded-xl bg-blue-800 p-6 text-white">
+    <div
+      className={cn(
+        "relative h-full self-stretch rounded-xl bg-blue-800 p-6 text-white",
+        className
+      )}
+    >
       <Image
         src="/assets/flower.png"
         width={120}
@@ -52,7 +62,7 @@ export default function SimulationPanel(props: SimulationPanelProps) {
         {props.jobDB.getLocale("simulation-title")}
       </div>
 
-      <div className="mb-8 font-serif text-4xl font-medium blur-md">
+      <div className="mb-8 select-none font-serif text-4xl font-medium blur-md">
         {"42 726 €"}
       </div>
 

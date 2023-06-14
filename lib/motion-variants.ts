@@ -4,7 +4,7 @@ export const motionVariants = {
   mainContainer: {
     hidden: {
       opacity: 0,
-      y: -10,
+      y: -3,
     },
     visible: {
       opacity: 1,
@@ -27,13 +27,13 @@ export const motionVariants = {
     },
   },
 
-  itemContainerWithScale: {
-    hidden: { y: 10, scale: 0 },
-    visible: { y: 0, scale: 1 },
+  itemContainerWithFade: {
+    hidden: { opacity: 0, y: 2, scale: 0.85 },
+    visible: { opacity: 1, y: 0, scale: 1 },
   },
 
-  itemContainerWithFade: {
-    hidden: { opacity: 0, y: 4, scale: 0.8 },
+  bigItemContainerWithFade: {
+    hidden: { opacity: 0, y: 2, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
   },
 } satisfies Record<string, Variants>

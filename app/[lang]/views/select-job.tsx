@@ -1,5 +1,3 @@
-"use client"
-
 import { JobId } from "@/schemas/job-id.schema"
 import { motion } from "framer-motion"
 

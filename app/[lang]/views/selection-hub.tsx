@@ -1,12 +1,9 @@
-"use client"
-
 import { motion } from "framer-motion"
 
 import { computeSeniority } from "@/lib/compute-seniority"
 import { getDependentsLabel } from "@/lib/get-dependents-label"
 import { getWorkLocationData } from "@/lib/get-work-location-data"
 import { JobDB } from "@/lib/job-db"
-import { motionVariants } from "@/lib/motion-variants"
 import { translate } from "@/lib/translate"
 import SelectionItem from "@/components/selection-item"
 
@@ -24,19 +21,12 @@ export default function SelectionHub({
   jobDB,
 }: SelectionHubProps) {
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={motionVariants.mainContainer}
-    >
+    <motion.div initial="hidden" animate="visible">
       <h2 className="mb-2 font-serif text-3xl">
         {jobDB.getLocale("main-title")}
       </h2>
 
-      <motion.div
-        variants={motionVariants.listItemsContainer}
-        className="flex flex-col space-y-6 py-4"
-      >
+      <motion.div className="flex flex-col space-y-6 py-4">
         <div className="grid grid-cols-2 gap-4">
           <SelectionItem
             onClick={() => onEdit("job")}

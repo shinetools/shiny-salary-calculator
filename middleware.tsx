@@ -25,6 +25,6 @@ export default function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Skip all internal paths (_next), api and assets
-    "/((?!(?:_next|api|assets)).*)",
+    "/((?!(?:_next|api|assets|favicon.ico)).*)",
   ],
 }

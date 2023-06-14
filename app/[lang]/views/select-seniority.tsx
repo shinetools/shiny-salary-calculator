@@ -1,5 +1,3 @@
-"use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { isPast, isValid } from "date-fns"
 import { motion } from "framer-motion"
@@ -9,6 +7,7 @@ import { z } from "zod"
 
 import { JobDB } from "@/lib/job-db"
 import { motionVariants } from "@/lib/motion-variants"
+import { cn } from "@/lib/utils"
 import { MotionButton } from "@/components/ui/button"
 import { MotionInput } from "@/components/ui/input"
 import {
@@ -168,7 +167,9 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       </motion.div>
 
       <motion.div
-        className="flex items-center justify-between space-x-4"
+        className={cn(
+          "flex flex-col items-center justify-between space-x-4 space-y-4 md:flex-row"
+        )}
         variants={motionVariants.listItemsContainer}
       >
         <MotionButton
