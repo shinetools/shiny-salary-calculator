@@ -21,6 +21,8 @@ const formatRecords = (records: Records<FieldSet>) =>
   records.map(({ id, fields }) => ({ ...fields, id: fields.id ?? id }))
 
 export const getJobData = async () => {
+  console.info(">>> FETCHING AIRTABLE DATA")
+
   const [
     jobsData,
     levelsData,

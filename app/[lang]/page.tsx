@@ -15,7 +15,6 @@ export type Lang = "fr" | "en"
 
 interface IndexPageProps {
   params: { lang: Lang }
-  searchParams: ParamsSchema
 }
 
 export default async function IndexPage(props: IndexPageProps) {
@@ -23,11 +22,9 @@ export default async function IndexPage(props: IndexPageProps) {
 
   return (
     <section className="mx-auto max-w-5xl p-4">
-      <IndexPageClient
-        params={props.searchParams}
-        jobData={data}
-        lang={props.params.lang}
-      />
+      <IndexPageClient jobData={data} lang={props.params.lang} />
     </section>
   )
 }
+
+export const dynamic = "error"

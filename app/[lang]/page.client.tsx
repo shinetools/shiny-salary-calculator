@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
@@ -39,7 +40,6 @@ const selectionSchema = z.object({
 export type SelectionSchema = z.infer<typeof selectionSchema>
 
 interface IndexPageClientProps {
-  params: ParamsSchema
   jobData: JobData
   lang: Lang
 }
@@ -52,13 +52,15 @@ export type Edition =
   | "workLocation"
 
 export default function IndexPageClient(props: IndexPageClientProps) {
+  const searchParams = useSearchParams()
+
   const jobDB = getJobDB(props.jobData, props.lang)
 
   const [editing, setEditing] = useState<Edition | null>(null)
 
   const [selection, setSelection] = useState<SelectionSchema>({
-    jobId: props.params.jobId ?? null,
-    levelId: props.params.levelId ?? null,
+    jobId: (searchParams.get("jobId") as any) ?? null,
+    levelId: (searchParams.get("levelId") as any) ?? null,
     careerStart: null,
     dependents: null,
     workLocation: null,
