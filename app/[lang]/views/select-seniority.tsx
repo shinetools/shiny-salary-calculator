@@ -2,14 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { isPast, isValid } from "date-fns"
+import { motion } from "framer-motion"
 import { GraduationCap } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { JobDB } from "@/lib/job-db"
+import { motionVariants } from "@/lib/motion-variants"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button, MotionButton } from "@/components/ui/button"
+import { Input, MotionInput } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -95,7 +97,10 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
   })
 
   return (
-    <form
+    <motion.form
+      initial="hidden"
+      animate="visible"
+      variants={motionVariants.mainContainer}
       onSubmit={form.handleSubmit(({ careerStart }) =>
         props.onSelect(careerStart)
       )}
@@ -108,34 +113,40 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
         Indique la date de ton premier emploi, après tes études (au mois près)
       </p>
 
-      <div className="mb-6 grid grid-cols-2 gap-4">
+      <motion.div
+        className="mb-6 grid grid-cols-2 gap-4"
+        variants={motionVariants.listItemsContainer}
+      >
         <Controller
           control={form.control}
           name="careerStart.month"
           render={({ field }) => (
-            <Select
-              onValueChange={(val) => {
-                form.setValue("careerStart.hasZeroXP", false)
-                field.onChange(val)
-              }}
-              value={field.value ?? undefined}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Mois" />
-              </SelectTrigger>
+            <motion.div variants={motionVariants.itemContainerWithFade}>
+              <Select
+                onValueChange={(val) => {
+                  form.setValue("careerStart.hasZeroXP", false)
+                  field.onChange(val)
+                }}
+                value={field.value ?? undefined}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Mois" />
+                </SelectTrigger>
 
-              <SelectContent>
-                {monthsForLocale("fr-FR").map((month, index) => (
-                  <SelectItem value={index.toString()} key={month}>
-                    {month}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <SelectContent>
+                  {monthsForLocale("fr-FR").map((month, index) => (
+                    <SelectItem value={index.toString()} key={month}>
+                      {month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </motion.div>
           )}
         />
 
-        <Input
+        <MotionInput
+          variants={motionVariants.itemContainerWithFade}
           type="number"
           placeholder="Année"
           {...form.register("careerStart.year", {
@@ -151,10 +162,14 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
             if (event.key === "Enter") event.preventDefault()
           }}
         />
-      </div>
+      </motion.div>
 
-      <div className="flex items-center justify-between space-x-4">
-        <Button
+      <motion.div
+        className="flex items-center justify-between space-x-4"
+        variants={motionVariants.listItemsContainer}
+      >
+        <MotionButton
+          variants={motionVariants.itemContainerWithFade}
           variant="ghost"
           className="text-grey-700"
           onClick={() => {
@@ -166,12 +181,16 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
         >
           <GraduationCap size="1em" className="mr-2" />
           {"Je n'ai pas encore commencé à travailler"}
-        </Button>
+        </MotionButton>
 
-        <Button type="submit" isDisabled={form.formState.isValid === false}>
+        <MotionButton
+          variants={motionVariants.itemContainerWithFade}
+          type="submit"
+          isDisabled={form.formState.isValid === false}
+        >
           Continuer
-        </Button>
-      </div>
-    </form>
+        </MotionButton>
+      </motion.div>
+    </motion.form>
   )
 }

@@ -15,12 +15,14 @@ import { LevelId } from "@/schemas/level-id.schema"
 import { WorkLocation } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { ValidSelectionSchema } from "@/app/components/simulation-panel"
+import { ValidSelectionSchema } from "@/app/[lang]/components/simulation-panel"
+import { Lang } from "@/app/[lang]/page"
 
 import { computeSeniority } from "./compute-seniority"
 
 export class JobDB {
   constructor(
+    public readonly lang: Lang,
     public jobs: z.infer<typeof jobsDataSchema>,
     public levels: z.infer<typeof levelsDataSchema>,
     public jobCategories: z.infer<typeof jobCategoriesDataSchema>,
@@ -29,11 +31,7 @@ export class JobDB {
     public dependentsBonusData: z.infer<typeof dependentsDataSchema>,
     public perksData: z.infer<typeof perksDataSchema>,
     public localesData: z.infer<typeof localesDataSchema>
-  ) {
-    if (typeof window !== "undefined") {
-      console.log(">>>>>>>>>", window.navigator.language)
-    }
-  }
+  ) {}
 
   getJob(jobId: JobId) {
     return this.jobs.find((job) => job.id === jobId)!
@@ -51,7 +49,14 @@ export class JobDB {
   }
 
   getLocale(localeId: string) {
-    const locale = this.localesData.find((locale) => locale.id === localeId)!
+    const locale = this.localesData.find((locale) => {
+      return locale.id === localeId
+    })
+
+    if (!locale) {
+      console.error(`Locale ${localeId} not found`)
+      return ""
+    }
 
     return locale.fr
   }
@@ -107,17 +112,21 @@ export class JobDB {
   }
 }
 
-export const getJobDB = ({
-  jobsData,
-  levelsData,
-  jobCategoriesData,
-  seniorityBonusData,
-  workLocationBonusData,
-  dependentsBonusData,
-  perksData,
-  localesData,
-}: JobData) => {
+export const getJobDB = (
+  {
+    jobsData,
+    levelsData,
+    jobCategoriesData,
+    seniorityBonusData,
+    workLocationBonusData,
+    dependentsBonusData,
+    perksData,
+    localesData,
+  }: JobData,
+  lang: Lang
+) => {
   return new JobDB(
+    lang,
     jobsData,
     levelsData,
     jobCategoriesData,

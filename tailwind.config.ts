@@ -106,6 +106,10 @@ const tailwindConfig = {
     },
 
     extend: {
+      fontSize: {
+        "2xl": "26px",
+        "4xl": "40px",
+      },
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,

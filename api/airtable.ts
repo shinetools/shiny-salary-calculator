@@ -18,7 +18,7 @@ Airtable.configure({ apiKey: ENV.AIRTABLE_API_KEY })
 const base = Airtable.base(ENV.AIRTABLE_BASE_ID)
 
 const formatRecords = (records: Records<FieldSet>) =>
-  records.map(({ id, fields }) => ({ ...fields, id }))
+  records.map(({ id, fields }) => ({ ...fields, id: fields.id ?? id }))
 
 export const getJobData = async () => {
   const [
@@ -82,7 +82,6 @@ export const getJobData = async () => {
       .select({ view: "main" })
       .all()
       .then((records) => {
-        console.log(`[LOG] →   records:`, records[0])
         return localesDataSchema.parse(formatRecords(records))
       }),
   ])

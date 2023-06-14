@@ -53,7 +53,7 @@
   /* Webkit */
   *::-webkit-scrollbar {
     background-color: transparent;
-    width: 8px;
+    width: 6px;
   }
   *::-webkit-scrollbar-thumb {
     background-color: #dedcce;

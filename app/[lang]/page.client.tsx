@@ -12,10 +12,11 @@ import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
 import { getJobDB } from "@/lib/job-db"
+import { translate } from "@/lib/translate"
 import { cn } from "@/lib/utils"
 
 import SimulationDisplay from "./components/simulation-panel"
-import { ParamsSchema } from "./page"
+import { Lang, ParamsSchema } from "./page"
 import SelectDependents from "./views/select-dependents"
 import SelectJob from "./views/select-job"
 import SelectLevel from "./views/select-level"
@@ -41,6 +42,7 @@ export type SelectionSchema = z.infer<typeof selectionSchema>
 interface IndexPageClientProps {
   params: ParamsSchema
   jobData: JobData
+  lang: Lang
 }
 
 export type Edition =
@@ -51,7 +53,7 @@ export type Edition =
   | "workLocation"
 
 export default function IndexPageClient(props: IndexPageClientProps) {
-  const jobDB = getJobDB(props.jobData)
+  const jobDB = getJobDB(props.jobData, props.lang)
 
   const [editing, setEditing] = useState<Edition | null>(null)
 
@@ -65,9 +67,9 @@ export default function IndexPageClient(props: IndexPageClientProps) {
 
   return (
     <div>
-      <section className="bg-grey-100 mb-4 rounded-2xl p-5">
-        <div className="grid grid-cols-[1fr_385px] grid-rows-[420px] space-x-12">
-          <div className="relative overflow-y-scroll">
+      <section className="bg-grey-100 mb-4 rounded-2xl p-3">
+        <div className="grid grid-cols-[1fr_385px] grid-rows-[400px] gap-3">
+          <div className="relative overflow-y-scroll p-5">
             {(() => {
               switch (editing) {
                 case "job":
@@ -75,7 +77,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectJob
                       onSelect={(jobId) => {
                         setSelection({ ...selection, jobId, levelId: null })
-                        setEditing(null)
+
+                        if (selection.levelId === null) {
+                          return setEditing("level")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -87,7 +94,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectLevel
                       onSelect={(levelId) => {
                         setSelection({ ...selection, levelId })
-                        setEditing(null)
+
+                        if (selection.careerStart === null) {
+                          return setEditing("seniority")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -100,7 +112,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectSeniority
                       onSelect={(seniority) => {
                         setSelection({ ...selection, careerStart: seniority })
-                        setEditing(null)
+
+                        if (selection.dependents === null) {
+                          return setEditing("dependents")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -113,7 +130,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     <SelectDependents
                       onSelect={(dependents) => {
                         setSelection({ ...selection, dependents })
-                        setEditing(null)
+
+                        if (selection.workLocation === null) {
+                          return setEditing("workLocation")
+                        }
+
+                        return setEditing(null)
                       }}
                       onPrev={() => setEditing(null)}
                       jobDB={jobDB}
@@ -165,10 +187,10 @@ export default function IndexPageClient(props: IndexPageClientProps) {
           {"Plein d'autres avantages"}
         </h1>
 
-        <div className="flex flex-wrap space-x-4 space-y-4">
+        <div className="-ml-4 flex flex-wrap space-x-4 space-y-4">
           {jobDB.perksData.map((perk) => (
             <div
-              key={perk.title_en}
+              key={perk.fr_title}
               className={cn(
                 "bg-grey-100 flex h-[62px] items-center space-x-3 rounded-lg p-2 pr-3",
                 "first-of-type:ml-4 first-of-type:mt-4"
@@ -188,7 +210,10 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   "whitespace-pre-line"
                 )}
               >
-                {jobDB.getLocale(perk.title)}
+                {translate(props.lang, {
+                  fr: perk.fr_title,
+                  en: perk.en_title,
+                })}
               </ReactMarkdown>
             </div>
           ))}

@@ -11,8 +11,10 @@ const paramsSchema = z.object({
 })
 
 export type ParamsSchema = z.infer<typeof paramsSchema>
+export type Lang = "fr" | "en"
 
 interface IndexPageProps {
+  params: { lang: Lang }
   searchParams: ParamsSchema
 }
 
@@ -20,8 +22,12 @@ export default async function IndexPage(props: IndexPageProps) {
   const data = await getJobData()
 
   return (
-    <section className="mx-auto max-w-6xl p-4">
-      <IndexPageClient params={props.searchParams} jobData={data} />
+    <section className="mx-auto max-w-5xl p-4">
+      <IndexPageClient
+        params={props.searchParams}
+        jobData={data}
+        lang={props.params.lang}
+      />
     </section>
   )
 }

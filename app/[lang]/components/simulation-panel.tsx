@@ -39,9 +39,9 @@ export default function SimulationPanel(props: SimulationPanelProps) {
   }
 
   return (
-    <div className="relative h-[395px] rounded-lg bg-blue-800 p-6 text-white ">
+    <div className="relative h-full self-stretch rounded-xl bg-blue-800 p-6 text-white">
       <Image
-        src="/flower.png"
+        src="/assets/flower.png"
         width={120}
         height={120}
         alt=""
@@ -49,6 +49,10 @@ export default function SimulationPanel(props: SimulationPanelProps) {
       />
 
       <div className="font-medium">Salaire annuel brut</div>
+
+      <div className="mb-8 font-serif text-4xl font-medium blur-md">
+        {"42 726 €"}
+      </div>
 
       <div className="absolute inset-x-10 top-[50%] text-center text-sm text-[#9BAEB2]">
         {

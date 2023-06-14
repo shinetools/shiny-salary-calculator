@@ -15,9 +15,10 @@ export default function BackButton({
 }: BackButtonProps) {
   return (
     <Button
-      variant="ghost"
+      variant="link"
+      size="sm"
       className={cn(
-        "text-grey-600 mb-1 flex items-center space-x-2 self-start",
+        "mb-4 flex h-auto items-center space-x-2 self-start px-0",
         className
       )}
       onClick={onPrev}

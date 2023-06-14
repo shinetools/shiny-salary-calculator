@@ -36,16 +36,16 @@ export default function SimulationResult(props: SimulationResultProps) {
   return (
     <div className="relative h-[395px] rounded-lg bg-blue-800 p-6 text-white ">
       <Image
-        src="/flower.png"
+        src="/assets/flower.png"
         width={120}
         height={120}
         alt=""
-        className="absolute right-2 top-2"
+        className="absolute right-0 top-0"
       />
 
       <h2 className="font-medium">Salaire annuel brut</h2>
 
-      <div className="mb-8 font-serif text-4xl">
+      <div className="mb-8 font-serif text-4xl font-medium">
         <CountUp
           start={previousSalary ?? 0}
           end={props.simulation.salary}

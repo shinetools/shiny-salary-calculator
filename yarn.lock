@@ -266,6 +266,13 @@
   dependencies:
     "@floating-ui/dom" "^1.2.7"
 
+"@formatjs/intl-localematcher@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-localematcher/-/intl-localematcher-0.4.0.tgz#63bbc37a7c3545a1bf1686072e51d9a3aed98d6b"
+  integrity sha512-bRTd+rKomvfdS4QDlVJ6TA/Jx1F2h/TBVO5LjvhQ7QPPHp19oPNMIum7W2CMEReq/zPxpmCeB31F9+5gl/qtvw==
+  dependencies:
+    tslib "^2.4.0"
+
 "@hookform/resolvers@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.1.1.tgz#b374d33e356428fff9c6ef3c933441fe15e40784"
@@ -746,6 +753,11 @@
     lodash.merge "^4.6.2"
     postcss-selector-parser "6.0.10"
 
+"@types/accept-language-parser@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@types/accept-language-parser/-/accept-language-parser-1.5.3.tgz#462f65a7d3900d0390415fa774e060c601519bdd"
+  integrity sha512-S8oM29O6nnRC3/+rwYV7GBYIIgNIZ52PCxqBG7OuItq9oATnYWy8FfeLKwvq5F7pIYjeeBSCI7y+l+Z9UEQpVQ==
+
 "@types/debug@^4.0.0":
   version "4.1.8"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.8.tgz#cef723a5d0a90990313faec2d1e22aee5eecb317"
@@ -931,6 +943,11 @@ abortcontroller-polyfill@^1.4.0:
   version "1.7.5"
   resolved "https://registry.npmjs.org/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.5.tgz"
   integrity sha512-JMJ5soJWP18htbbxJjG7bG6yuI6pRhgJ0scHHTfkUjf6wjP912xZWvM+A4sJK3gqd9E8fcPbDnOefbA9Th/FIQ==
+
+accept-language-parser@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/accept-language-parser/-/accept-language-parser-1.5.0.tgz#8877c54040a8dcb59e0a07d9c1fde42298334791"
+  integrity sha512-QhyTbMLYo0BBGg1aWbeMG4ekWtds/31BrEU+DONOg/7ax23vxpL03Pb7/zBmha2v7vdD3AyzZVWBVGEZxKOXWw==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"

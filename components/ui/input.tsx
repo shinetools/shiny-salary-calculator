@@ -1,4 +1,5 @@
 import * as React from "react"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -22,4 +23,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 )
 Input.displayName = "Input"
 
-export { Input }
+const MotionInput = motion(Input)
+
+export { Input, MotionInput }
