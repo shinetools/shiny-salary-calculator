@@ -84,7 +84,9 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
           ? { hasZeroXP: true }
           : {
               hasZeroXP: false,
-              month: props.careerStart?.getMonth().toString(),
+              month: props.careerStart
+                ? (props.careerStart.getMonth() + 1).toString()
+                : undefined,
               year: props.careerStart?.getFullYear().toString(),
             },
     },
