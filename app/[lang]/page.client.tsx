@@ -219,7 +219,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
           </h1>
 
           <div className="overflow-x-scroll">
-            <div className="-ml-4 flex min-w-[800px] flex-wrap space-x-4 space-y-4 md:min-w-[auto]">
+            <div className="-ml-4 flex min-w-[800px] flex-wrap space-x-4 space-y-4 pb-2 md:min-w-[auto]">
               {jobDB.perksData.map((perk) => (
                 <div
                   key={perk.fr_title}
@@ -235,6 +235,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                   >
                     <Image width={24} height={24} src={perk.icon.url} alt="" />
                   </div>
+
                   <ReactMarkdown
                     className={cn(
                       "prose prose-strong:font-medium prose-strong:text-primary prose-p:text-grey-700 prose-p:leading-4 prose-strong:text-sm prose-p:text-xs",
