@@ -8,6 +8,7 @@ import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
+import { Analytics } from "@vercel/analytics/react"
 import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
@@ -75,6 +76,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
     <main
       className={cn("min-h-full", inIframe ? "bg-transparent" : "bg-grey-200")}
     >
+      <Analytics />
       <div
         className={cn("mx-auto max-w-5xl p-2 md:p-4", inIframe && "p-0 md:p-0")}
       >
