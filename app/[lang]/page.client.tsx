@@ -5,10 +5,10 @@ import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 import { JobData } from "@/api/airtable"
 import { dependentsSchema } from "@/schemas/dependents.schema"
-import { jobIdSchema } from "@/schemas/job-id.schema"
+import { JobId, jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
-import { Analytics } from "@vercel/analytics/react"
+import va, { Analytics } from "@vercel/analytics/react"
 import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
@@ -16,8 +16,10 @@ import { getJobDB } from "@/lib/job-db"
 import { translate } from "@/lib/translate"
 import { cn } from "@/lib/utils"
 
-import SimulationDisplay from "./components/simulation-panel"
-import { Lang, ParamsSchema } from "./page"
+import SimulationDisplay, {
+  validSelectionSchema,
+} from "./components/simulation-panel"
+import { Lang } from "./page"
 import SelectDependents from "./views/select-dependents"
 import SelectJob from "./views/select-job"
 import SelectLevel from "./views/select-level"
@@ -52,6 +54,8 @@ export type Edition =
   | "dependents"
   | "workLocation"
 
+let simulationDoneAs: JobId | null = null
+
 export default function IndexPageClient(props: IndexPageClientProps) {
   const searchParams = useSearchParams()
   const inIframe = !!searchParams.get("iframe")
@@ -64,13 +68,32 @@ export default function IndexPageClient(props: IndexPageClientProps) {
     (job) => job.job_code === searchParams.get("job_code")
   )
 
-  const [selection, setSelection] = useState<SelectionSchema>({
+  const [selection, _setSelection] = useState<SelectionSchema>({
     jobId: initialJob?.id ?? null,
     levelId: null,
     careerStart: null,
     dependents: null,
     workLocation: null,
   })
+
+  const setSelection = (selection: SelectionSchema) => {
+    _setSelection(selection)
+
+    const simulation = validSelectionSchema.safeParse(selection)
+
+    if (!simulation.success) {
+      return
+    }
+
+    const job = jobDB.getJob(simulation.data.jobId)?.job_code ?? ""
+
+    if (simulationDoneAs === simulation.data.jobId) {
+      return va.track("Simulation Updated", { job })
+    }
+
+    va.track("Simulation Performed", { job })
+    simulationDoneAs = simulation.data.jobId
+  }
 
   return (
     <main
