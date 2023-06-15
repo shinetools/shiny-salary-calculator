@@ -58,7 +58,7 @@ export class JobDB {
       return ""
     }
 
-    return locale.fr
+    return this.lang === "en" ? locale.en?.trim() || locale.fr : locale.fr
   }
 
   getLevel(levelId: LevelId) {
