@@ -61,7 +61,7 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
                 </span>
               </div>
 
-              <div className="text-grey-600 text-sm font-normal">
+              <div className="text-grey-700 text-sm font-normal">
                 {getWorkLocationData(workLocation, props.jobDB).description}
               </div>
             </div>
