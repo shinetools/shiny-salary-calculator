@@ -1,5 +1,3 @@
-"use client"
-
 import { Dependents } from "@/schemas/dependents.schema"
 import { motion } from "framer-motion"
 

@@ -1,5 +1,3 @@
-"use client"
-
 import Image from "next/image"
 import { WorkLocation } from "@/schemas/work-location.schema"
 import { motion } from "framer-motion"
@@ -33,19 +31,22 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
       </h2>
 
       <motion.div
-        className="grid grid-cols-2 gap-4"
+        className={cn("grid grid-cols-1 gap-4 md:grid-cols-2")}
         variants={motionVariants.listItemsContainer}
       >
         {(
           ["in-person", "full-remote-france", "full-remote-europe"] as const
         ).map((workLocation, index) => (
           <MotionButton
-            variants={motionVariants.itemContainerWithFade}
+            variants={motionVariants.bigItemContainerWithFade}
             onClick={() => props.onSelect(workLocation)}
             variant="secondary"
             size="lg"
             key={workLocation}
-            className={cn("h-auto p-3 text-left", index === 0 && "col-span-2 ")}
+            className={cn(
+              "h-auto p-3 text-left",
+              index === 0 && "md:col-span-2"
+            )}
           >
             <div>
               <div className="mb-2 flex items-center space-x-2">

@@ -20,11 +20,7 @@ interface IndexPageProps {
 export default async function IndexPage(props: IndexPageProps) {
   const data = await getJobData()
 
-  return (
-    <section className="mx-auto max-w-5xl p-4">
-      <IndexPageClient jobData={data} lang={props.params.lang} />
-    </section>
-  )
+  return <IndexPageClient jobData={data} lang={props.params.lang} />
 }
 
 export const dynamic = "error"

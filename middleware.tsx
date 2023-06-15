@@ -18,13 +18,20 @@ export default function middleware(request: NextRequest) {
         loose: true,
       }) || defaultLocale
 
-    return NextResponse.redirect(new URL(`/${locale}/${pathname}`, request.url))
+    const searchParams = request.nextUrl.searchParams.toString()
+
+    const url = new URL(
+      `/${locale}/${pathname}${searchParams ? `?${searchParams}` : ""}`,
+      request.url
+    )
+
+    return NextResponse.redirect(url)
   }
 }
 
 export const config = {
   matcher: [
     // Skip all internal paths (_next), api and assets
-    "/((?!(?:_next|api|assets)).*)",
+    "/((?!(?:_next|api|assets|favicon.ico)).*)",
   ],
 }

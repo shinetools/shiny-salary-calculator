@@ -2,6 +2,7 @@ import { useCallback } from "react"
 import Image from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
 import CountUp from "react-countup"
+import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 
 import { JobDB } from "@/lib/job-db"
 import { usePrevious } from "@/lib/use-previous"
@@ -61,24 +62,40 @@ export default function SimulationResult(props: SimulationResultProps) {
             return (
               <div key={perk} className="grid grid-cols-[1fr_auto]">
                 <div>
-                  <h3 className="font-medium">
+                  <ReactMarkdown
+                    className="text-[13px] font-medium"
+                    components={{
+                      strong: (props) => (
+                        <span {...props} className="text-[14px]" />
+                      ),
+                    }}
+                  >
                     {props.jobDB.getLocale(
                       `simulation-financialPerks-${perk}-title`
                     )}
-                  </h3>
-                  <div className="text-xs text-blue-100">
+                  </ReactMarkdown>
+                  <div className="text-xs text-blue-200">
                     {props.jobDB.getLocale(
                       `simulation-financialPerks-${perk}-description`
                     )}
                   </div>
                 </div>
 
-                <AnimatePresence mode="popLayout">
+                <AnimatePresence mode="wait">
                   <motion.div
                     className="text-end font-medium"
                     key={props.simulation[perk]}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 3 }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.15 },
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: -3,
+                      transition: { duration: 0.15 },
+                    }}
                   >
                     {currencyFormatter.format(props.simulation[perk])}
                   </motion.div>
