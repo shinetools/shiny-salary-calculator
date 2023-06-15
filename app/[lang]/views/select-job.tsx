@@ -42,27 +42,23 @@ export default function SelectJob(props: SelectJobProps) {
             </h3>
 
             <div className="flex flex-wrap space-x-3 space-y-3">
-              {jobs.map((job) => {
-                console.log(job)
-
-                return (
-                  <motion.div
-                    variants={motionVariants.itemContainerWithFade}
-                    className="first-of-type:ml-3 first-of-type:mt-3"
-                    key={job.id}
+              {jobs.map((job) => (
+                <motion.div
+                  variants={motionVariants.itemContainerWithFade}
+                  className="first-of-type:ml-3 first-of-type:mt-3"
+                  key={job.id}
+                >
+                  <Button
+                    onClick={() => props.onSelect(job.id)}
+                    variant="secondary"
                   >
-                    <Button
-                      onClick={() => props.onSelect(job.id)}
-                      variant="secondary"
-                    >
-                      {translate(props.jobDB.lang, {
-                        fr: job.fr_label,
-                        en: job.en_label,
-                      })}
-                    </Button>
-                  </motion.div>
-                )
-              })}
+                    {translate(props.jobDB.lang, {
+                      fr: job.fr_label,
+                      en: job.en_label,
+                    })}
+                  </Button>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         ))}

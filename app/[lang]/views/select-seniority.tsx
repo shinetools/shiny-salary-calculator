@@ -50,7 +50,7 @@ const seniorityFormSchema = z.object({
       }
 
       const date = new Date(
-        `${val.year}-${(val.month + 1).toString().padStart(2, "0")}-01`
+        `${val.year}-${val.month.toString().padStart(2, "0")}-01`
       )
 
       return date
@@ -137,7 +137,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
 
                 <SelectContent>
                   {monthsForLocale("fr-FR").map((month, index) => (
-                    <SelectItem value={index.toString()} key={month}>
+                    <SelectItem value={(index + 1).toString()} key={month}>
                       {month}
                     </SelectItem>
                   ))}
