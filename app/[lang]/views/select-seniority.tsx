@@ -50,7 +50,7 @@ const seniorityFormSchema = z.object({
       }
 
       const date = new Date(
-        `${val.year}-${val.month.toString().padStart(2, "0")}-01`
+        `${val.year}-${(val.month + 1).toString().padStart(2, "0")}-01`
       )
 
       return date
