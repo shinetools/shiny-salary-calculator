@@ -75,7 +75,12 @@ export default function IndexPageClient(props: IndexPageClientProps) {
     <main
       className={cn("min-h-full", inIframe ? "bg-transparent" : "bg-grey-200")}
     >
-      <div className="mx-auto max-w-5xl p-2 md:p-4">
+      <div
+        className={cn(
+          "mx-auto max-w-5xl p-2 md:p-4",
+          inIframe && "py-0 md:py-0"
+        )}
+      >
         <section className="bg-grey-100 mb-4 rounded-2xl p-3">
           <div
             className={cn(
