@@ -76,10 +76,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
       className={cn("min-h-full", inIframe ? "bg-transparent" : "bg-grey-200")}
     >
       <div
-        className={cn(
-          "mx-auto max-w-5xl p-2 md:p-4",
-          inIframe && "py-0 md:py-0"
-        )}
+        className={cn("mx-auto max-w-5xl p-2 md:p-4", inIframe && "p-0 md:p-0")}
       >
         <section className="bg-grey-100 mb-4 rounded-2xl p-3">
           <div
@@ -216,41 +213,42 @@ export default function IndexPageClient(props: IndexPageClientProps) {
           </ReactMarkdown>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-12 overflow-x-scroll">
           <h1 className="mb-2 font-serif text-3xl">
             {jobDB.getLocale("main-perks-title")}
           </h1>
 
-          <div className="-ml-4 flex flex-wrap space-x-4 space-y-4">
-            {jobDB.perksData.map((perk) => (
-              <div
-                key={perk.fr_title}
-                className={cn(
-                  "bg-grey-100 flex h-[62px] items-center space-x-3 rounded-xl p-2 pr-3",
-                  "first-of-type:ml-4 first-of-type:mt-4"
-                )}
-              >
+          <div className="overflow-x-scroll">
+            <div className="-ml-4 flex min-w-[800px] flex-wrap space-x-4 space-y-4 md:min-w-[auto]">
+              {jobDB.perksData.map((perk) => (
                 <div
+                  key={perk.fr_title}
                   className={cn(
-                    "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
+                    "bg-grey-100 flex h-[62px] items-center space-x-3 rounded-xl p-2 pr-3",
+                    "first-of-type:ml-4 first-of-type:mt-4"
                   )}
                 >
-                  <Image width={24} height={24} src={perk.icon.url} alt="" />
+                  <div
+                    className={cn(
+                      "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
+                    )}
+                  >
+                    <Image width={24} height={24} src={perk.icon.url} alt="" />
+                  </div>
+                  <ReactMarkdown
+                    className={cn(
+                      "prose prose-strong:font-medium prose-strong:text-primary prose-p:text-grey-700 prose-p:leading-4 prose-strong:text-sm prose-p:text-xs",
+                      "whitespace-pre-line"
+                    )}
+                  >
+                    {translate(props.lang, {
+                      fr: perk.fr_title,
+                      en: perk.en_title,
+                    })}
+                  </ReactMarkdown>
                 </div>
-
-                <ReactMarkdown
-                  className={cn(
-                    "prose prose-strong:font-medium prose-strong:text-primary prose-p:text-grey-700 prose-p:leading-4 prose-strong:text-sm prose-p:text-xs",
-                    "whitespace-pre-line"
-                  )}
-                >
-                  {translate(props.lang, {
-                    fr: perk.fr_title,
-                    en: perk.en_title,
-                  })}
-                </ReactMarkdown>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
