@@ -87,7 +87,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
             <div
               className={cn(
                 "relative overflow-y-scroll p-0 md:p-5",
-                editing && "row-span-2"
+                editing && "row-span-2 md:row-span-1"
               )}
             >
               {(() => {
