@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
+    "predev": "vercel env pull",
     "dev": "PORT=1111 next dev",
     "build": "next build",
     "start": "PORT=1111 next start",
@@ -57,6 +58,7 @@
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.3.2",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "vercel": "^30.2.2"
   }
 }
