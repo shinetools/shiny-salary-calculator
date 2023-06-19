@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { careerStartSchema } from "@/schemas/career-start.schema"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
@@ -14,7 +15,7 @@ import SimulationResult from "./simulation-result"
 export const validSelectionSchema = z.object({
   jobId: jobIdSchema,
   levelId: levelIdSchema,
-  careerStart: z.date().or(z.literal(false)),
+  careerStart: careerStartSchema,
   dependents: dependentsSchema,
   workLocation: workLocationSchema,
 })

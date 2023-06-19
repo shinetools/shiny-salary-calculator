@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { useSearchParams } from "next/navigation"
 import { JobData } from "@/api/airtable"
+import { careerStartSchema } from "@/schemas/career-start.schema"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { JobId, jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
@@ -14,6 +14,7 @@ import { z } from "zod"
 
 import { getJobDB } from "@/lib/job-db"
 import { translate } from "@/lib/translate"
+import { useHandleSearchParams } from "@/lib/use-handle-search-params"
 import { cn } from "@/lib/utils"
 
 import SimulationDisplay, {
@@ -27,21 +28,6 @@ import SelectSeniority from "./views/select-seniority"
 import SelectWorkLocation from "./views/select-work-location"
 import SelectionHub from "./views/selection-hub"
 
-const selectionSchema = z.object({
-  jobId: jobIdSchema.nullable(),
-  levelId: levelIdSchema.nullable(),
-  dependents: dependentsSchema.nullable(),
-  workLocation: workLocationSchema.nullable(),
-  careerStart: z
-    .date()
-    // `undefined` is for unprovided value
-    .nullable()
-    // `false` is for a candidate that has zero XP
-    .or(z.literal(false)),
-})
-
-export type SelectionSchema = z.infer<typeof selectionSchema>
-
 interface IndexPageClientProps {
   jobData: JobData
   lang: Lang
@@ -54,34 +40,45 @@ export type Edition =
   | "dependents"
   | "workLocation"
 
-let simulationDoneAs: JobId | null = null
+const selectionSchema = z.object({
+  jobId: jobIdSchema.nullable().catch(null),
+  levelId: levelIdSchema.nullable().catch(null),
+  careerStart: careerStartSchema.nullable().catch(null),
+  dependents: dependentsSchema.nullable().catch(null),
+  workLocation: workLocationSchema.nullable().catch(null),
+})
+
+export type SelectionSchema = z.infer<typeof selectionSchema>
 
 export default function IndexPageClient(props: IndexPageClientProps) {
-  const searchParams = useSearchParams()
-  const inIframe = !!searchParams.get("iframe")
-
   const jobDB = getJobDB(props.jobData, props.lang)
 
+  const [simulationDoneAs, setSimulationDoneAs] = useState<JobId | null>(null)
   const [editing, setEditing] = useState<Edition | null>(null)
 
-  const initialJob = jobDB.jobs.find(
-    (job) => job.job_code === searchParams.get("job_code")
-  )
+  const searchParams = useHandleSearchParams()
 
-  const [selection, _setSelection] = useState<SelectionSchema>({
-    jobId: initialJob?.id ?? null,
-    levelId: null,
-    careerStart: null,
-    dependents: null,
-    workLocation: null,
+  const inIframe = !!searchParams.get("iframe")
+
+  const selection = selectionSchema.parse({
+    // We store the job by its code in the URL for a human-readable URL param on TeamTailor
+    jobId: jobDB.getJobByCode(searchParams.get("jobCode") as string | null)?.id,
+    levelId: searchParams.get("levelId"),
+    careerStart: searchParams.get("careerStart"),
+    dependents: searchParams.get("dependents"),
+    workLocation: searchParams.get("workLocation"),
   })
 
-  const setSelection = (selection: SelectionSchema) => {
-    _setSelection(selection)
+  const setSelection = ({ jobId, ...selection }: SelectionSchema) => {
+    searchParams.set({
+      ...selection,
+      jobCode: jobId ? jobDB.getJob(jobId).job_code : null,
+    })
 
     const simulation = validSelectionSchema.safeParse(selection)
 
-    if (!simulation.success) {
+    if (simulation.success === false) {
+      // The simulation is not complete right now.
       return
     }
 
@@ -92,14 +89,16 @@ export default function IndexPageClient(props: IndexPageClientProps) {
     }
 
     va.track("Simulation Performed", { job })
-    simulationDoneAs = simulation.data.jobId
+    setSimulationDoneAs(simulation.data.jobId)
   }
 
   return (
     <main
       className={cn("min-h-full", inIframe ? "bg-transparent" : "bg-grey-200")}
     >
+      {/* Vercel Analytics will track page views and custom events (see `va.track` above) */}
       <Analytics />
+
       <div
         className={cn("mx-auto max-w-5xl p-2 md:p-4", inIframe && "p-0 md:p-0")}
       >

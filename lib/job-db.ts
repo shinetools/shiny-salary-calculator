@@ -37,6 +37,10 @@ export class JobDB {
     return this.jobs.find((job) => job.id === jobId)!
   }
 
+  getJobByCode(jobCode: string | null) {
+    return this.jobs.find((job) => job.job_code === jobCode)
+  }
+
   get getJobsByCategory() {
     return this.jobCategories.map((category) => {
       return {
