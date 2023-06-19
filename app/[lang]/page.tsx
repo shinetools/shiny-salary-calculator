@@ -23,4 +23,4 @@ export default async function IndexPage(props: IndexPageProps) {
   return <IndexPageClient jobData={data} lang={props.params.lang} />
 }
 
-export const dynamic = "error"
+export const dynamic = "force-static"
