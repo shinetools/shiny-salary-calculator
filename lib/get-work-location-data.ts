@@ -6,17 +6,17 @@ import { JobDB } from "./job-db"
 
 const WORK_LOCATION_DATA = {
   "in-person": {
-    icon: "/assets/work-location-assets/in-person.png",
+    icon: "/assets/work-location-assets/in-person.svg",
     title: "selection-workLocation-inPerson-title",
     description: "selection-workLocation-inPerson-description",
   },
   "full-remote-france": {
-    icon: "/assets/work-location-assets/full-remote-france.png",
+    icon: "/assets/work-location-assets/full-remote-france.svg",
     title: "selection-workLocation-fullRemoteFrance-title",
     description: "selection-workLocation-fullRemoteFrance-description",
   },
   "full-remote-europe": {
-    icon: "/assets/work-location-assets/full-remote-europe.png",
+    icon: "/assets/work-location-assets/full-remote-europe.svg",
     title: "selection-workLocation-fullRemoteEurope-title",
     description: "selection-workLocation-fullRemoteEurope-description",
   },

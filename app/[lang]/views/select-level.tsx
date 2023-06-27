@@ -56,7 +56,7 @@ export default function SelectLevel(props: SelectLevelProps) {
               className="block h-auto"
             >
               <span className="block">{level.level}</span>
-              <span className="text-grey-600 block text-xs font-normal">
+              <span className="text-grey-700 block text-xs font-normal">
                 {translate(props.jobDB.lang, {
                   fr: level.fr_label ?? "",
                   en: level.en_label,
