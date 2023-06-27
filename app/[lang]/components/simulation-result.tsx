@@ -60,7 +60,7 @@ export default function SimulationResult(props: SimulationResultProps) {
         {(["holidaysBonus", "profitSharing", "shadowShares"] as const).map(
           (perk) => {
             return (
-              <div key={perk} className="grid grid-cols-[1fr_auto]">
+              <div key={perk} className="grid grid-cols-[1fr_auto] gap-4">
                 <div>
                   <ReactMarkdown
                     className="text-[13px] font-medium"
@@ -83,7 +83,7 @@ export default function SimulationResult(props: SimulationResultProps) {
 
                 <AnimatePresence mode="wait">
                   <motion.div
-                    className="text-end font-medium"
+                    className="text-end"
                     key={props.simulation[perk]}
                     initial={{ opacity: 0, y: 3 }}
                     animate={{
@@ -97,7 +97,11 @@ export default function SimulationResult(props: SimulationResultProps) {
                       transition: { duration: 0.15 },
                     }}
                   >
-                    {currencyFormatter.format(props.simulation[perk])}
+                    <span className="text-blue-200">{"~ "}</span>
+
+                    <span className="font-medium">
+                      {currencyFormatter.format(props.simulation[perk])}
+                    </span>
                   </motion.div>
                 </AnimatePresence>
               </div>

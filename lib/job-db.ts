@@ -37,6 +37,10 @@ export class JobDB {
     return this.jobs.find((job) => job.id === jobId)!
   }
 
+  getJobByCode(jobCode: string | null) {
+    return this.jobs.find((job) => job.job_code === jobCode)
+  }
+
   get getJobsByCategory() {
     return this.jobCategories.map((category) => {
       return {
@@ -105,7 +109,9 @@ export class JobDB {
 
     return {
       salary,
-      holidaysBonus: Math.floor(salary * 0.01),
+      // This is the new "prime vacances" policy
+      // it's an approximation of 1% of the average salary at Shine.
+      holidaysBonus: 500,
       profitSharing: Math.floor(salary * 0.075),
       shadowShares: Math.floor(salary * 0.125),
     }

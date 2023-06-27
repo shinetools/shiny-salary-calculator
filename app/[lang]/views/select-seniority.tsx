@@ -114,7 +114,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       </p>
 
       <motion.div
-        className="mb-6 grid grid-cols-2 gap-4"
+        className="mb-8 grid grid-cols-2 gap-4"
         variants={motionVariants.listItemsContainer}
       >
         <Controller
@@ -170,7 +170,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
 
       <motion.div
         className={cn(
-          "flex flex-col items-center justify-between space-x-4 space-y-4 md:flex-row"
+          "flex flex-col items-center justify-between space-x-4 space-y-4 md:flex-row md:space-y-0"
         )}
         variants={motionVariants.listItemsContainer}
       >

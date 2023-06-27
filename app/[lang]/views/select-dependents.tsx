@@ -32,7 +32,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
       </p>
 
       <motion.div
-        className="-ml-3 flex flex-wrap space-x-3 space-y-3"
+        className="-ml-3 flex flex-wrap space-x-4 space-y-3"
         variants={motionVariants.listItemsContainer}
       >
         {[0, 1, 2, 3].map((dependents) => (
@@ -40,7 +40,7 @@ export default function SelectDependents(props: SelectDependentsProps) {
             variants={motionVariants.itemContainerWithFade}
             onClick={() => props.onSelect(dependents)}
             variant="secondary"
-            className="first-of-type:ml-3 first-of-type:mt-3"
+            className="text-md first-of-type:ml-3 first-of-type:mt-3 last-of-type:px-6"
             size="lg"
             key={dependents}
           >

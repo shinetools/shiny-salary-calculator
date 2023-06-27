@@ -68,10 +68,14 @@ export default function SelectionHub({
               }
 
               if (selection.careerStart === false) {
-                return "/"
+                return jobDB.lang === "fr" ? "0 année" : "0 year"
               }
 
               const seniority = computeSeniority(selection.careerStart)
+
+              if (seniority === 0) {
+                return jobDB.lang === "fr" ? "0 année" : "0 year"
+              }
 
               return jobDB.lang === "fr"
                 ? `${seniority} an${seniority > 1 ? "s" : ""}`
