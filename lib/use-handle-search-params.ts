@@ -61,6 +61,8 @@ const computeSearchParams = (
   for (const [param, value] of Object.entries(newSearchParams)) {
     if (value !== null) {
       params.set(param, stringifyParam(value))
+    } else {
+      params.delete(param)
     }
   }
 
