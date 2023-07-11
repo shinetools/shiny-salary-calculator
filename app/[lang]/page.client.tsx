@@ -51,31 +51,35 @@ const selectionSchema = z.object({
 export type SelectionSchema = z.infer<typeof selectionSchema>
 
 export default function IndexPageClient(props: IndexPageClientProps) {
+  const searchParams = useHandleSearchParams()
+  const inIframe = !!searchParams.get("iframe")
+
   const jobDB = getJobDB(props.jobData, props.lang)
 
   const [simulationDoneAs, setSimulationDoneAs] = useState<JobId | null>(null)
   const [editing, setEditing] = useState<Edition | null>(null)
 
-  const searchParams = useHandleSearchParams()
+  const [selection, setSelection] = useState(
+    selectionSchema.parse({
+      // We store the job by its code in the URL for a human-readable URL param on TeamTailor
+      jobId: jobDB.getJobByCode(searchParams.get("jobCode") as string | null)
+        ?.id,
+      levelId: searchParams.get("levelId"),
+      careerStart: searchParams.get("careerStart"),
+      dependents: searchParams.get("dependents"),
+      workLocation: searchParams.get("workLocation"),
+    })
+  )
 
-  const inIframe = !!searchParams.get("iframe")
-
-  const selection = selectionSchema.parse({
-    // We store the job by its code in the URL for a human-readable URL param on TeamTailor
-    jobId: jobDB.getJobByCode(searchParams.get("jobCode") as string | null)?.id,
-    levelId: searchParams.get("levelId"),
-    careerStart: searchParams.get("careerStart"),
-    dependents: searchParams.get("dependents"),
-    workLocation: searchParams.get("workLocation"),
-  })
-
-  const setSelection = ({ jobId, ...selection }: SelectionSchema) => {
+  const handleSetSelection = ({ jobId, ...selection }: SelectionSchema) => {
     searchParams.set({
       ...selection,
       jobCode: jobId ? jobDB.getJob(jobId).job_code : null,
     })
 
-    const simulation = validSelectionSchema.safeParse(selection)
+    setSelection({ ...selection, jobId })
+
+    const simulation = validSelectionSchema.safeParse({ ...selection, jobId })
 
     if (simulation.success === false) {
       // The simulation is not complete right now.
@@ -122,7 +126,11 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectJob
                         onSelect={(jobId) => {
-                          setSelection({ ...selection, jobId, levelId: null })
+                          handleSetSelection({
+                            ...selection,
+                            jobId,
+                            levelId: null,
+                          })
 
                           if (selection.levelId === null) {
                             return setEditing("level")
@@ -139,7 +147,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectLevel
                         onSelect={(levelId) => {
-                          setSelection({ ...selection, levelId })
+                          handleSetSelection({ ...selection, levelId })
 
                           if (selection.careerStart === null) {
                             return setEditing("seniority")
@@ -157,7 +165,10 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectSeniority
                         onSelect={(seniority) => {
-                          setSelection({ ...selection, careerStart: seniority })
+                          handleSetSelection({
+                            ...selection,
+                            careerStart: seniority,
+                          })
 
                           if (selection.dependents === null) {
                             return setEditing("dependents")
@@ -175,7 +186,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectDependents
                         onSelect={(dependents) => {
-                          setSelection({ ...selection, dependents })
+                          handleSetSelection({ ...selection, dependents })
 
                           if (selection.workLocation === null) {
                             return setEditing("workLocation")
@@ -192,7 +203,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectWorkLocation
                         onSelect={(workLocation) => {
-                          setSelection({ ...selection, workLocation })
+                          handleSetSelection({ ...selection, workLocation })
                           setEditing(null)
                         }}
                         onPrev={() => setEditing(null)}
