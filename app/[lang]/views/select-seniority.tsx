@@ -20,7 +20,7 @@ import {
 
 import BackButton from "../components/selection-back-button"
 
-function monthsForLocale(localeName: "fr-FR") {
+function monthsForLocale(localeName: string) {
   const { format } = new Intl.DateTimeFormat(localeName, { month: "long" })
 
   return [...Array(12).keys()].map((m) =>
@@ -138,7 +138,7 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {monthsForLocale("fr-FR").map((month, index) => (
+                  {monthsForLocale(props.jobDB.lang).map((month, index) => (
                     <SelectItem value={(index + 1).toString()} key={month}>
                       {month}
                     </SelectItem>
