@@ -4,6 +4,7 @@ import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown } from "lucide-react"
 
+import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -80,7 +81,9 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 font-sans text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      // Because it's in a portal outside <main>, and the css variable is set on <main>
+      fontSans.className,
       className
     )}
     {...props}
