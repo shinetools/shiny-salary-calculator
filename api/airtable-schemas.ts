@@ -45,13 +45,11 @@ export const workLocationDataSchema = z
   .pipe(z.record(workLocationSchema, z.number()))
 
 export const perksDataSchema = z.array(
-  z
-    .object({
-      icon: z.array(z.object({ url: z.string() })),
-      fr_title: z.string(),
-      en_title: z.string().optional(),
-    })
-    .transform((val) => ({ ...val, icon: val.icon[0] }))
+  z.object({
+    icon_name: z.string(),
+    fr_title: z.string(),
+    en_title: z.string().optional(),
+  })
 )
 
 export const localesDataSchema = z.array(localeSchema)

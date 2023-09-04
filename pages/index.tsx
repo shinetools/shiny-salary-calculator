@@ -1,37 +1,31 @@
-"use client"
-
 import { useState } from "react"
+import type { GetStaticProps, InferGetStaticPropsType } from "next"
+import Head from "next/head"
 import Image from "next/image"
-import { JobData } from "@/api/airtable"
+import { getJobData } from "@/api/airtable"
 import { careerStartSchema } from "@/schemas/career-start.schema"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { JobId, jobIdSchema } from "@/schemas/job-id.schema"
 import { levelIdSchema } from "@/schemas/level-id.schema"
 import { workLocationSchema } from "@/schemas/work-location.schema"
+import SelectDependents from "@/views/select-dependents"
+import SelectJob from "@/views/select-job"
+import SelectLevel from "@/views/select-level"
+import SelectSeniority from "@/views/select-seniority"
+import SelectWorkLocation from "@/views/select-work-location"
+import SelectionHub from "@/views/selection-hub"
 import va, { Analytics } from "@vercel/analytics/react"
 import ReactMarkdown from "react-markdown"
 import { z } from "zod"
 
 import { getJobDB } from "@/lib/job-db"
+import { Lang } from "@/lib/locales"
 import { translate } from "@/lib/translate"
 import { useHandleSearchParams } from "@/lib/use-handle-search-params"
 import { cn } from "@/lib/utils"
-
-import SimulationDisplay, {
+import SimulationPanel, {
   validSelectionSchema,
-} from "./components/simulation-panel"
-import { Lang } from "./page"
-import SelectDependents from "./views/select-dependents"
-import SelectJob from "./views/select-job"
-import SelectLevel from "./views/select-level"
-import SelectSeniority from "./views/select-seniority"
-import SelectWorkLocation from "./views/select-work-location"
-import SelectionHub from "./views/selection-hub"
-
-interface IndexPageClientProps {
-  jobData: JobData
-  lang: Lang
-}
+} from "@/components/simulation-panel"
 
 export type Edition =
   | "job"
@@ -50,36 +44,48 @@ const selectionSchema = z.object({
 
 export type SelectionSchema = z.infer<typeof selectionSchema>
 
-export default function IndexPageClient(props: IndexPageClientProps) {
+export const getStaticProps = (async (props) => {
+  const data = await getJobData()
+  return {
+    props: {
+      data,
+      lang: (props.locale ?? props.defaultLocale ?? "fr") as Lang,
+    },
+  }
+}) satisfies GetStaticProps
+
+export default function Page({
+  data,
+  lang,
+}: InferGetStaticPropsType<typeof getStaticProps> & { className: string }) {
   const searchParams = useHandleSearchParams()
   const inIframe = !!searchParams.get("iframe")
 
-  const jobDB = getJobDB(props.jobData, props.lang)
+  const jobDB = getJobDB(data, lang)
 
   const [simulationDoneAs, setSimulationDoneAs] = useState<JobId | null>(null)
   const [editing, setEditing] = useState<Edition | null>(null)
 
-  const [selection, setSelection] = useState(
-    selectionSchema.parse({
-      // We store the job by its code in the URL for a human-readable URL param on TeamTailor
-      jobId: jobDB.getJobByCode(searchParams.get("jobCode") as string | null)
-        ?.id,
-      levelId: searchParams.get("levelId"),
-      careerStart: searchParams.get("careerStart"),
-      dependents: searchParams.get("dependents"),
-      workLocation: searchParams.get("workLocation"),
-    })
-  )
+  const selection = selectionSchema.parse({
+    jobId: jobDB.getJobByCode(searchParams.get("jobCode") as string | null)?.id,
+    levelId: searchParams.get("levelId"),
+    careerStart: searchParams.get("careerStart"),
+    dependents: searchParams.get("dependents"),
+    workLocation: searchParams.get("workLocation"),
+  })
 
-  const handleSetSelection = ({ jobId, ...selection }: SelectionSchema) => {
+  const handleSetSelection = ({
+    jobId,
+    ...update
+  }: Partial<SelectionSchema>) => {
     searchParams.set({
-      ...selection,
-      jobCode: jobId ? jobDB.getJob(jobId).job_code : null,
+      ...update,
+      ...(jobId !== undefined
+        ? { jobCode: jobId ? jobDB.getJob(jobId).job_code : null }
+        : undefined),
     })
 
-    setSelection({ ...selection, jobId })
-
-    const simulation = validSelectionSchema.safeParse({ ...selection, jobId })
+    const simulation = validSelectionSchema.safeParse(selection)
 
     if (simulation.success === false) {
       // The simulation is not complete right now.
@@ -97,11 +103,30 @@ export default function IndexPageClient(props: IndexPageClientProps) {
   }
 
   return (
-    <main
+    <div
       className={cn("min-h-full", inIframe ? "bg-transparent" : "bg-grey-200")}
     >
       {/* Vercel Analytics will track page views and custom events (see `va.track` above) */}
       <Analytics />
+
+      <Head>
+        <title>
+          {lang === "fr"
+            ? "Shine | Estime ton salaire"
+            : "Shine | Estimate your salary"}
+        </title>
+        <meta name="des" />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta
+          name="description"
+          content={
+            lang === "fr"
+              ? "Chez Shine, nous avons fait le choix de la transparence des salaires. Tu peux ici estimer le salaire que tu gagnerais en nous rejoignant !"
+              : "At Shine, we've chosen salary transparency. Here, you can estimate the salary you would earn by joining us!"
+          }
+        />
+      </Head>
 
       <div
         className={cn("mx-auto max-w-5xl p-2 md:p-4", inIframe && "p-0 md:p-0")}
@@ -127,7 +152,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                       <SelectJob
                         onSelect={(jobId) => {
                           handleSetSelection({
-                            ...selection,
+                            // ...selection,
                             jobId,
                             levelId: null,
                           })
@@ -147,7 +172,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     return (
                       <SelectLevel
                         onSelect={(levelId) => {
-                          handleSetSelection({ ...selection, levelId })
+                          handleSetSelection({ levelId })
 
                           if (selection.careerStart === null) {
                             return setEditing("seniority")
@@ -166,7 +191,6 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                       <SelectSeniority
                         onSelect={(seniority) => {
                           handleSetSelection({
-                            ...selection,
                             careerStart: seniority,
                           })
 
@@ -224,7 +248,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
               })()}
             </div>
 
-            <SimulationDisplay
+            <SimulationPanel
               className={cn(editing && "hidden md:block")}
               jobDB={jobDB}
               selection={selection}
@@ -263,13 +287,20 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                     "first-of-type:ml-4 first-of-type:mt-4"
                   )}
                 >
-                  <div
-                    className={cn(
-                      "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
-                    )}
-                  >
-                    <Image width={24} height={24} src={perk.icon.url} alt="" />
-                  </div>
+                  {perk.icon_name && (
+                    <div
+                      className={cn(
+                        "bg-grey-200 flex h-[46px] w-[46px] items-center justify-center rounded-lg"
+                      )}
+                    >
+                      <Image
+                        width={24}
+                        height={24}
+                        src={`/assets/perk-icons/${perk.icon_name}.svg`}
+                        alt=""
+                      />
+                    </div>
+                  )}
 
                   <ReactMarkdown
                     className={cn(
@@ -277,7 +308,7 @@ export default function IndexPageClient(props: IndexPageClientProps) {
                       "whitespace-pre-line"
                     )}
                   >
-                    {translate(props.lang, {
+                    {translate(lang, {
                       fr: perk.fr_title,
                       en: perk.en_title,
                     })}
@@ -288,6 +319,6 @@ export default function IndexPageClient(props: IndexPageClientProps) {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

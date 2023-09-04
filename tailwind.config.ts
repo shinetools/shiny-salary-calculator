@@ -64,7 +64,12 @@ export const shinePalette = {
 }
 
 const tailwindConfig = {
-  content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+  content: [
+    "app/**/*.{ts,tsx}",
+    "pages/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "views/**/*.{ts,tsx}",
+  ],
   theme: {
     colors: {
       border: shinePalette.grey[300],

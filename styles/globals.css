@@ -42,6 +42,7 @@
     @apply border-border;
   }
   body,
+  #__next,
   html {
     @apply text-foreground h-full;
   }

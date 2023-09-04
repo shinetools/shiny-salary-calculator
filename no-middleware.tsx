@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server"
 
+import { LANGS } from "./lib/locales"
+
 const parser = require("accept-language-parser")
 
-let locales = ["fr", "en"]
-let defaultLocale = "fr"
+const defaultLocale = "fr"
 
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  const pathnameIsMissingLocale = locales.every(
+  const pathnameIsMissingLocale = LANGS.every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   )
 
   if (pathnameIsMissingLocale) {
     const locale =
-      parser.pick(locales, request.headers.get("Accept-Language"), {
+      parser.pick(LANGS, request.headers.get("Accept-Language"), {
         loose: true,
       }) || defaultLocale
 

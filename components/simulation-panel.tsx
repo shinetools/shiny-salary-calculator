@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { SelectionSchema } from "@/pages"
 import { careerStartSchema } from "@/schemas/career-start.schema"
 import { dependentsSchema } from "@/schemas/dependents.schema"
 import { jobIdSchema } from "@/schemas/job-id.schema"
@@ -9,7 +10,6 @@ import { z } from "zod"
 import { JobDB } from "@/lib/job-db"
 import { cn } from "@/lib/utils"
 
-import { SelectionSchema } from "../page.client"
 import SimulationResult from "./simulation-result"
 
 export const validSelectionSchema = z.object({

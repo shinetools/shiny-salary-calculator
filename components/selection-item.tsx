@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Edit3 } from "lucide-react"
+import { PenLine } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -30,7 +30,7 @@ export default function SelectionItem(props: SelectionItemProps) {
       </div>
 
       <div className="">
-        <Edit3 className="text-grey-600" size={18} />
+        <PenLine className="text-grey-600" size={18} />
       </div>
     </motion.button>
   )
