@@ -74,11 +74,14 @@ export default function Page({
     workLocation: searchParams.get("workLocation"),
   })
 
-  const handleSetSelection = (update: Partial<SelectionSchema>) => {
+  const handleSetSelection = ({
+    jobId,
+    ...update
+  }: Partial<SelectionSchema>) => {
     searchParams.set({
       ...update,
-      ...(update.jobId !== undefined
-        ? { jobCode: update.jobId ? jobDB.getJob(update.jobId).job_code : null }
+      ...(jobId !== undefined
+        ? { jobCode: jobId ? jobDB.getJob(jobId).job_code : null }
         : undefined),
     })
 
