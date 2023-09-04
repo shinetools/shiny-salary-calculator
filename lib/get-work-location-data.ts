@@ -1,7 +1,5 @@
 import { WorkLocation } from "@/schemas/work-location.schema"
 
-import { Lang } from "@/app/[lang]/page"
-
 import { JobDB } from "./job-db"
 
 const WORK_LOCATION_DATA = {

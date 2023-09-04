@@ -15,10 +15,10 @@ import { LevelId } from "@/schemas/level-id.schema"
 import { WorkLocation } from "@/schemas/work-location.schema"
 import { z } from "zod"
 
-import { ValidSelectionSchema } from "@/app/[lang]/components/simulation-panel"
-import { Lang } from "@/app/[lang]/page"
+import { ValidSelectionSchema } from "@/components/simulation-panel"
 
 import { computeSeniority } from "./compute-seniority"
+import { Lang } from "./locales"
 
 export class JobDB {
   constructor(

@@ -1,9 +1,4 @@
-import {
-  ReadonlyURLSearchParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation"
+import { useRouter } from "next/router"
 import { formatISO, isValid, parseISO } from "date-fns"
 
 const stringifyParam = (param: string | number | boolean | Date | null) => {
@@ -46,17 +41,10 @@ const parseParam = (param: string) => {
 }
 
 const computeSearchParams = (
-  currentSearchParams:
-    | ReadonlyURLSearchParams
-    | string
-    | Record<string, string>,
+  currentSearchParams: Record<string, string>,
   newSearchParams: Record<string, string | number | boolean | Date | null>
 ) => {
-  const params = new URLSearchParams(
-    currentSearchParams instanceof ReadonlyURLSearchParams
-      ? currentSearchParams.toString()
-      : currentSearchParams
-  )
+  const params = new URLSearchParams(currentSearchParams)
 
   for (const [param, value] of Object.entries(newSearchParams)) {
     if (value !== null) {
@@ -71,20 +59,24 @@ const computeSearchParams = (
 
 export const useHandleSearchParams = () => {
   const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   const set = (
     input: Record<string, string | number | boolean | Date | null>
   ) => {
-    const params = computeSearchParams(searchParams, input)
+    const params = computeSearchParams(
+      router.query as Record<string, string>,
+      input
+    )
 
-    router.replace(`${pathname}?${params.toString()}`)
+    router.replace(`${router.pathname}?${params.toString()}`, undefined, {
+      shallow: true,
+      scroll: false,
+    })
   }
 
   return {
     get: (paramKey: string) => {
-      const paramValue = searchParams.get(paramKey)
+      const paramValue = router.query[paramKey] as string | undefined
 
       return paramValue ? parseParam(paramValue) : undefined
     },

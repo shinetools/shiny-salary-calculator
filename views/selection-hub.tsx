@@ -1,3 +1,4 @@
+import { Edition, SelectionSchema } from "@/pages"
 import { motion } from "framer-motion"
 
 import { computeSeniority } from "@/lib/compute-seniority"
@@ -6,8 +7,6 @@ import { getWorkLocationData } from "@/lib/get-work-location-data"
 import { JobDB } from "@/lib/job-db"
 import { translate } from "@/lib/translate"
 import SelectionItem from "@/components/selection-item"
-
-import { Edition, SelectionSchema } from "../page.client"
 
 interface SelectionHubProps {
   selection: SelectionSchema

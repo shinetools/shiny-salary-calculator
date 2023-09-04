@@ -1,6 +1,6 @@
 import { Dependents } from "@/schemas/dependents.schema"
 
-import { Lang } from "@/app/[lang]/page"
+import { Lang } from "./locales"
 
 const DEPENDENTS_LABEL = {
   fr: ["0", "1", "2", "3 et +"],
