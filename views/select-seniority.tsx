@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { isPast, isValid } from "date-fns"
+import { getYear, isPast, isValid } from "date-fns"
 import { motion } from "framer-motion"
 import { GraduationCap } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { JobDB } from "@/lib/job-db"
+import { Lang } from "@/lib/locales"
 import { motionVariants } from "@/lib/motion-variants"
 import { cn } from "@/lib/utils"
 import { MotionButton } from "@/components/ui/button"
@@ -26,6 +27,25 @@ function monthsForLocale(localeName: string) {
   return [...Array(12).keys()].map((m) =>
     format(new Date(Date.UTC(2023, m % 12)))
   )
+}
+
+const currentYear = getYear(new Date())
+
+function yearsForLocale(localeName: Lang) {
+  const MAX_SENIORITY = 21
+
+  const getMaxSeniorityLabel = (year: number) =>
+    localeName === "fr" ? `${year} ou avant` : `${year} or before`
+
+  return new Array(MAX_SENIORITY).fill("").map((val, index) => {
+    return {
+      value: currentYear - index,
+      label:
+        index === MAX_SENIORITY - 1
+          ? getMaxSeniorityLabel(currentYear - index)
+          : `${currentYear - index}`,
+    }
+  })
 }
 
 const seniorityFormSchema = z.object({
@@ -149,22 +169,36 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
           )}
         />
 
-        <MotionInput
-          variants={motionVariants.itemContainerWithFade}
-          type="number"
-          placeholder={props.jobDB.getLocale("selection-seniority-labelYear")}
-          {...form.register("careerStart.year", {
-            onChange() {
-              form.setValue("careerStart.hasZeroXP", false)
-            },
-          })}
-          onKeyDown={(event) => {
-            /**
-             * I can't understand why pressing enter on this input will close the form
-             * WITHOUT submitting it. Meaning validation is not evaluated, and data is lost.
-             */
-            if (event.key === "Enter") event.preventDefault()
-          }}
+        <Controller
+          control={form.control}
+          name="careerStart.year"
+          render={({ field }) => (
+            <motion.div variants={motionVariants.itemContainerWithFade}>
+              <Select
+                onValueChange={(val) => {
+                  form.setValue("careerStart.hasZeroXP", false)
+                  field.onChange(val)
+                }}
+                value={field.value ?? undefined}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={props.jobDB.getLocale(
+                      "selection-seniority-labelYear"
+                    )}
+                  />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {yearsForLocale(props.jobDB.lang).map(({ label, value }) => (
+                    <SelectItem value={value.toString()} key={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </motion.div>
+          )}
         />
       </motion.div>
 
@@ -176,8 +210,8 @@ export default function SelectSeniority(props: SelectSeniorityProps) {
       >
         <MotionButton
           variants={motionVariants.itemContainerWithFade}
-          variant="ghost"
-          className="text-grey-700"
+          variant="link"
+          className="text-grey-700 px-0"
           onClick={() => {
             form.setValue("careerStart.month", null)
             form.setValue("careerStart.year", null)

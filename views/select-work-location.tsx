@@ -34,39 +34,36 @@ export default function SelectWorkLocation(props: SelectWorkLocationProps) {
         className={cn("grid grid-cols-1 gap-4 md:grid-cols-2")}
         variants={motionVariants.listItemsContainer}
       >
-        {(
-          ["in-person", "full-remote-france", "full-remote-europe"] as const
-        ).map((workLocation, index) => (
-          <MotionButton
-            variants={motionVariants.bigItemContainerWithFade}
-            onClick={() => props.onSelect(workLocation)}
-            variant="secondary"
-            size="lg"
-            key={workLocation}
-            className={cn(
-              "h-auto p-3 text-left",
-              index === 0 && "md:col-span-2"
-            )}
-          >
-            <div>
-              <div className="mb-2 flex items-center space-x-2">
-                <Image
-                  src={getWorkLocationData(workLocation, props.jobDB).icon}
-                  height={24}
-                  width={24}
-                  alt=""
-                />
-                <span>
-                  {getWorkLocationData(workLocation, props.jobDB).title}
-                </span>
-              </div>
+        {(["in-person", "full-remote-france"] as const).map(
+          (workLocation, index) => (
+            <MotionButton
+              variants={motionVariants.bigItemContainerWithFade}
+              onClick={() => props.onSelect(workLocation)}
+              variant="secondary"
+              size="lg"
+              key={workLocation}
+              className={cn("h-auto p-3 text-left", "md:col-span-2")}
+            >
+              <div>
+                <div className="mb-2 flex items-center space-x-2">
+                  <Image
+                    src={getWorkLocationData(workLocation, props.jobDB).icon}
+                    height={24}
+                    width={24}
+                    alt=""
+                  />
+                  <span>
+                    {getWorkLocationData(workLocation, props.jobDB).title}
+                  </span>
+                </div>
 
-              <div className="text-grey-700 text-sm font-normal">
-                {getWorkLocationData(workLocation, props.jobDB).description}
+                <div className="text-grey-700 text-sm font-normal">
+                  {getWorkLocationData(workLocation, props.jobDB).description}
+                </div>
               </div>
-            </div>
-          </MotionButton>
-        ))}
+            </MotionButton>
+          )
+        )}
       </motion.div>
     </motion.div>
   )
