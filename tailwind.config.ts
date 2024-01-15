@@ -115,6 +115,10 @@ const tailwindConfig = {
         "2xl": "26px",
         "4xl": "40px",
       },
+      borderWidth: {
+        1.5: "1.5px",
+      },
+
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
