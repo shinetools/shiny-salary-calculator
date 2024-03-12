@@ -13,11 +13,6 @@ const WORK_LOCATION_DATA = {
     title: "selection-workLocation-fullRemoteFrance-title",
     description: "selection-workLocation-fullRemoteFrance-description",
   },
-  "full-remote-europe": {
-    icon: "/assets/work-location-assets/full-remote-europe.svg",
-    title: "selection-workLocation-fullRemoteEurope-title",
-    description: "selection-workLocation-fullRemoteEurope-description",
-  },
 } satisfies Record<
   WorkLocation,
   {
